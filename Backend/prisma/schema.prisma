@@ -1,0 +1,168 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserStatus {
+  ONBOARDING_NAME
+  ONBOARDING_BVN
+  ONBOARDING_PIN
+  ACTIVE
+  FROZEN
+  SUSPENDED
+}
+
+enum KycTier {
+  TIER_0
+  TIER_1
+  TIER_2
+  TIER_3
+}
+
+enum TransactionType {
+  TRANSFER_OUT
+  TRANSFER_IN
+  BILL_PAYMENT
+  AIRTIME
+  DATA_BUNDLE
+  ACCOUNT_FUNDING
+  FEE
+}
+
+enum TransactionStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+  REVERSED
+}
+
+enum LedgerEntryType {
+  DEBIT
+  CREDIT
+}
+
+enum TokenType {
+  ONBOARDING
+  PIN_AUTHORIZATION
+  EMERGENCY_UNFREEZE
+}
+
+model User {
+  id                String             @id @default(cuid())
+  phoneNumber       String             @unique // E.164 format: e.g. +2348012345678
+  whatsappId        String             @unique // Meta WABA sender ID
+  fullName          String?
+  bvn               String?            // Encrypted Tier-1 BVN
+  nin               String?            // Encrypted Tier-1 NIN
+  pinHash           String?            // Hashed 4-digit transaction PIN (bcrypt/argon2)
+  status            UserStatus         @default(ONBOARDING_NAME)
+  kycTier           KycTier            @default(TIER_0)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  wallet            Wallet?
+  dedicatedNubans   DedicatedNuban[]
+  transactions      Transaction[]
+  ephemeralTokens   EphemeralToken[]
+
+  @@index([phoneNumber])
+  @@index([whatsappId])
+  @@index([status])
+}
+
+model Wallet {
+  id                String             @id @default(cuid())
+  userId            String             @unique
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balanceInKobo     BigInt             @default(0) // Integer kobo (1 NGN = 100 kobo)
+  currency          String             @default("NGN")
+  isLocked          Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  ledgerEntries     LedgerEntry[]
+
+  @@index([userId])
+}
+
+model DedicatedNuban {
+  id                String             @id @default(cuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountNumber     String             @unique // 10-digit Nigerian NUBAN
+  accountName       String
+  bankName          String             // e.g. "Safe Haven MFB" or "Providus Bank"
+  bankCode          String             // 6-digit CBN/NIP bank code
+  partnerReference  String?
+  isActive          Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([accountNumber])
+}
+
+model Transaction {
+  id                     String             @id @default(cuid())
+  reference              String             @unique // e.g. VD_TX_89214710
+  idempotencyKey         String             @unique // Prevents duplicate execution
+  userId                 String
+  user                   User               @relation(fields: [userId], references: [id])
+  type                   TransactionType
+  status                 TransactionStatus  @default(PENDING)
+  amountInKobo           BigInt
+  feeInKobo              BigInt             @default(0)
+  recipientBankCode      String?
+  recipientAccountNumber String?
+  recipientName          String?
+  narration              String?
+  partnerReference       String?            // Partner settlement reference
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  ledgerEntries          LedgerEntry[]
+
+  @@index([userId])
+  @@index([reference])
+  @@index([idempotencyKey])
+  @@index([status])
+}
+
+model LedgerEntry {
+  id                 String             @id @default(cuid())
+  walletId           String
+  wallet             Wallet             @relation(fields: [walletId], references: [id])
+  transactionId      String
+  transaction        Transaction        @relation(fields: [transactionId], references: [id])
+  type               LedgerEntryType
+  amountInKobo       BigInt
+  balanceAfterInKobo BigInt
+  description        String
+  createdAt          DateTime           @default(now())
+
+  @@index([walletId])
+  @@index([transactionId])
+}
+
+model EphemeralToken {
+  id                 String             @id @default(cuid())
+  token              String             @unique // Cryptographically secure random token
+  userId             String?
+  user               User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phoneNumber        String
+  type               TokenType
+  payload            Json?              // e.g. amount, recipient details for authorization
+  isUsed             Boolean            @default(false)
+  expiresAt          DateTime
+  createdAt          DateTime           @default(now())
+
+  @@index([token])
+  @@index([phoneNumber])
+  @@index([expiresAt])
+}
+
