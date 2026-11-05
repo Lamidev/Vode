@@ -36,6 +36,11 @@ const FAQS = [
   },
   {
     value: "item-6",
+    q: "Can someone access my money if my WhatsApp account is banned or logged out?",
+    a: "No. Your funds do not reside inside WhatsApp; they are held securely on regulated partner banking rails in your dedicated NUBAN. WhatsApp is solely the conversational interface. If your WhatsApp is ever banned, deleted, or logged out, your money remains 100% safe. You can lock your account anytime via our Emergency Web Portal (usevode.com/freeze), and easily re-link your verified identity to a new phone number through our support team.",
+  },
+  {
+    value: "item-7",
     q: "Are there fees for using Vode?",
     a: "Transfers between Vode users are completely free. Outward transfers to external commercial banks carry standard nominal network clearing fees displayed clearly before you confirm the transaction.",
   },
