@@ -8,3 +8,6 @@ webhookRouter.get("/", WebhookController.verifyWebhook);
 
 // Inbound WhatsApp messages from users
 webhookRouter.post("/", WebhookController.handleIncomingMessage);
+
+// Secure In-App Webview Sheet Onboarding Submission
+webhookRouter.post("/complete-onboarding", WebhookController.completeOnboarding);

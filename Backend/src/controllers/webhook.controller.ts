@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
+import crypto from "node:crypto";
+import bcrypt from "bcrypt";
 import { env } from "../config/env";
 import { logger } from "../lib/logger";
 import { prisma } from "../lib/prisma";
 import { WhatsAppService } from "../services/whatsapp.service";
 import { OnboardingService } from "../services/onboarding.service";
+import { NombaService } from "../services/nomba.service";
 
 export class WebhookController {
   /**
@@ -25,6 +28,129 @@ export class WebhookController {
   }
 
   /**
+   * Complete Secure Onboarding via In-App Webview Sheet (POST /webhook/complete-onboarding)
+   */
+  static async completeOnboarding(req: Request, res: Response): Promise<void> {
+    try {
+      const { token, fullName, bvn, pin } = req.body;
+
+      if (!token || !fullName || !bvn || !pin) {
+        res.status(400).json({ error: "Missing required onboarding fields" });
+        return;
+      }
+
+      // 1. Verify ephemeral token
+      const tokenRecord = await prisma.ephemeralToken.findUnique({
+        where: { token },
+      });
+
+      if (!tokenRecord || tokenRecord.isUsed || tokenRecord.expiresAt < new Date()) {
+        res.status(400).json({
+          error: "Onboarding session expired or invalid. Please message Vode on WhatsApp to get a fresh link.",
+        });
+        return;
+      }
+
+      const phoneNumber = tokenRecord.phoneNumber;
+      const pinHash = await bcrypt.hash(pin, 10);
+      const [firstName, ...rest] = fullName.trim().split(" ");
+      const lastName = rest.join(" ") || firstName;
+      const accountRef = `vode_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
+
+      logger.info({ phoneNumber, fullName }, "🔒 Processing secure in-app onboarding submission");
+
+      // 2. Call Nomba to create permanent dedicated virtual account
+      const virtualAcct = await NombaService.createVirtualAccount({
+        accountRef,
+        phoneNumber,
+        firstName,
+        lastName,
+        bvn,
+      });
+
+      if (!virtualAcct) {
+        res.status(500).json({
+          error: "Failed to provision bank account with payment partner. Please verify your BVN/NIN and try again.",
+        });
+        return;
+      }
+
+      // 3. Upsert User in database
+      const user = await prisma.user.upsert({
+        where: { phoneNumber },
+        update: {
+          fullName: fullName.trim(),
+          pinHash,
+          status: "ACTIVE",
+          kycTier: "TIER_1",
+        },
+        create: {
+          phoneNumber,
+          whatsappId: phoneNumber.replace("+", ""),
+          fullName: fullName.trim(),
+          pinHash,
+          status: "ACTIVE",
+          kycTier: "TIER_1",
+        },
+      });
+
+      // 4. Ensure Wallet exists
+      await prisma.wallet.upsert({
+        where: { userId: user.id },
+        update: {},
+        create: {
+          userId: user.id,
+          balanceInKobo: 0n,
+          currency: "NGN",
+        },
+      });
+
+      // 5. Create DedicatedNuban entry
+      await prisma.dedicatedNuban.create({
+        data: {
+          userId: user.id,
+          accountNumber: virtualAcct.accountNumber,
+          accountName: virtualAcct.accountName,
+          bankName: virtualAcct.bankName,
+          bankCode: virtualAcct.bankCode,
+          partnerReference: accountRef,
+        },
+      });
+
+      // 6. Mark token as used
+      await prisma.ephemeralToken.update({
+        where: { token },
+        data: { isUsed: true },
+      });
+
+      // 7. Dispatch instant celebration plaque on WhatsApp
+      const cleanPhone = phoneNumber.replace("+", "");
+      await WhatsAppService.sendTextMessage(
+        cleanPhone,
+        `🎉 *Welcome to Vode, ${firstName}!* \n\n` +
+        `Your dedicated Nigerian bank account is active and ready to receive money:\n\n` +
+        `🏛️ *Bank:* ${virtualAcct.bankName}\n` +
+        `💳 *Account No:* \`${virtualAcct.accountNumber}\` *(tap to copy)*\n` +
+        `👤 *Account Name:* ${virtualAcct.accountName}\n\n` +
+        `_Transfer any amount to this account from any banking app to fund your Vode wallet._\n\n` +
+        `Type *"Balance"* anytime to check your funds, or send a voice note to make a transfer!`
+      );
+
+      res.status(200).json({
+        success: true,
+        account: {
+          accountNumber: virtualAcct.accountNumber,
+          bankName: virtualAcct.bankName,
+          accountName: virtualAcct.accountName,
+        },
+      });
+    } catch (err: any) {
+      logger.error({ error: err.message }, "Error during secure completeOnboarding");
+      res.status(500).json({ error: "Internal server error during account setup." });
+    }
+  }
+
+  /**
    * Inbound Message Ingestion (POST /webhook)
    */
   static async handleIncomingMessage(req: Request, res: Response): Promise<void> {
@@ -35,7 +161,6 @@ export class WebhookController {
       const body = req.body;
 
       if (!body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]) {
-        // Status update (sent, delivered, read) or ping
         return;
       }
 
@@ -60,55 +185,8 @@ export class WebhookController {
       const textBody =
         messageType === "text" ? messageData.text?.body?.trim() || "" : "";
 
-      // 2. NEW USER: Initialize In-Chat Onboarding Flow
-      if (!user) {
-        try {
-          user = await prisma.user.create({
-            data: {
-              phoneNumber: formattedPhone,
-              whatsappId: senderPhone,
-              status: "ONBOARDING_NAME",
-            },
-            include: { wallet: true, dedicatedNubans: true },
-          });
-        } catch {
-          // Dev fallback if DB is offline
-          user = {
-            id: `temp_${Date.now()}`,
-            phoneNumber: formattedPhone,
-            status: "ONBOARDING_NAME",
-          };
-        }
-
-        await WhatsAppService.sendTextMessage(
-          senderPhone,
-          `👋 *Welcome to Vode!*\n` +
-          `Everyday money, right inside your WhatsApp.\n\n` +
-          `To create your dedicated 10-digit bank account in under 60 seconds, what is your *Full Legal Name* (First and Last name as on your bank account)?`
-        );
-        return;
-      }
-
-      // 3. IN-CHAT ONBOARDING PROGRESSION (100% inside WhatsApp)
-      if (
-        user.status === "ONBOARDING_NAME" ||
-        user.status === "ONBOARDING_BVN" ||
-        user.status === "ONBOARDING_PIN"
-      ) {
-        if (!textBody) {
-          await WhatsAppService.sendTextMessage(
-            senderPhone,
-            `Please reply with text to continue setting up your account.`
-          );
-          return;
-        }
-
-        await OnboardingService.handleOnboardingStep(user, textBody, senderPhone);
-        return;
-      }
-
-      // 4. EMERGENCY FROZEN USER
-      if (user.status === "FROZEN") {
+      // 2. EMERGENCY FROZEN USER
+      if (user && user.status === "FROZEN") {
         await WhatsAppService.sendTextMessage(
           senderPhone,
           `🚨 *Your Vode account is currently locked.*\n\n` +
@@ -118,7 +196,49 @@ export class WebhookController {
         return;
       }
 
-      // 5. ACTIVE USERS: Financial Commands & Multimodal
+      // 3. UNREGISTERED OR INCOMPLETE USERS -> Send Secure In-App Sheet Link
+      if (!user || user.status !== "ACTIVE") {
+        // Find existing valid token or generate a fresh one
+        let token = "";
+        const existingToken = await prisma.ephemeralToken.findFirst({
+          where: {
+            phoneNumber: formattedPhone,
+            isUsed: false,
+            expiresAt: { gt: new Date() },
+          },
+          orderBy: { createdAt: "desc" },
+        });
+
+        if (existingToken) {
+          token = existingToken.token;
+        } else {
+          token = crypto.randomBytes(24).toString("hex");
+          await prisma.ephemeralToken.create({
+            data: {
+              token,
+              phoneNumber: formattedPhone,
+              type: "ONBOARDING",
+              expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+            },
+          });
+        }
+
+        const onboardUrl = `https://www.usevode.com/onboard?token=${token}`;
+
+        await WhatsAppService.sendTextMessage(
+          senderPhone,
+          `👋 *Welcome to Vode!*\n` +
+          `Everyday money, right inside your WhatsApp.\n\n` +
+          `🔒 *Bank-Grade Secure Setup:*\n` +
+          `To protect your privacy and comply with CBN banking regulations, your BVN and 4-digit PIN are encrypted inside our secure verification portal:\n\n` +
+          `👉 *Tap here to set up your account:*\n` +
+          `${onboardUrl}\n\n` +
+          `⏱️ _Takes less than 60 seconds. Your credentials are never typed in chat._`
+        );
+        return;
+      }
+
+      // 4. ACTIVE USERS: Financial Commands & Multimodal
       if (messageType === "text") {
         const lowerText = textBody.toLowerCase();
 
