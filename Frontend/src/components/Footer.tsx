@@ -35,7 +35,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-12 gap-8 mb-12">
           {/* Brand Info (Full width on mobile, 6 cols on desktop) */}
           <div className="col-span-2 md:col-span-6 space-y-3">
-            <div className="flex items-center gap-2.5">
+            <Link href="/" className="inline-flex items-center gap-2.5">
               <div className="w-7 h-7 relative rounded-md overflow-hidden border border-[#E2E8F0] shadow-2xs">
                 <Image
                   src="/logo.png"
@@ -47,7 +47,7 @@ export default function Footer() {
               <span className="font-display font-extrabold text-lg text-[#090D16]">
                 vode
               </span>
-            </div>
+            </Link>
             <p className="text-xs text-[#525B6C] max-w-sm leading-relaxed">
               Vode is a WhatsApp-first digital financial utility. We make sending, receiving, and managing money as easy as sending a message.
             </p>
@@ -69,32 +69,32 @@ export default function Footer() {
             </p>
             <ul className="space-y-2 text-xs text-[#525B6C]">
               <li>
-                <Link href="#features" className="hover:text-[#090D16]">
+                <Link href="/#features" className="hover:text-[#090D16]">
                   Features
                 </Link>
               </li>
               <li>
-                <Link href="#how-it-works" className="hover:text-[#090D16]">
+                <Link href="/#how-it-works" className="hover:text-[#090D16]">
                   How It Works
                 </Link>
               </li>
               <li>
-                <Link href="#security" className="hover:text-[#090D16]">
+                <Link href="/#security" className="hover:text-[#090D16]">
                   Security
                 </Link>
               </li>
               <li>
-                <Link href="#faq" className="hover:text-[#090D16]">
+                <Link href="/#faq" className="hover:text-[#090D16]">
                   FAQ
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Safety & Emergency (Opposite Navigation on mobile, 3 cols on desktop) */}
+          {/* Safety & Legal (Opposite Navigation on mobile, 3 cols on desktop) */}
           <div className="col-span-1 md:col-span-3 space-y-2.5">
             <p className="text-xs font-mono font-semibold uppercase text-[#090D16] tracking-wider">
-              Safety & Emergency
+              Safety & Legal
             </p>
             <ul className="space-y-2 text-xs text-[#525B6C]">
               <li>
@@ -103,7 +103,14 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <span className="text-[#525B6C]">CBN Regulated Partner Rails</span>
+                <Link href="/privacy" className="hover:text-[#090D16] transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-[#090D16] transition-colors">
+                  Terms of Service
+                </Link>
               </li>
               <li>
                 <span className="text-[#525B6C]">NDPC Data Certified</span>
@@ -115,7 +122,17 @@ export default function Footer() {
         {/* Bottom Legal Notice */}
         <div className="pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#525B6C]">
           <p>© 2026 VODE SYSTEMS AND TECHNOLOGIES LIMITED. All rights reserved.</p>
-          <p className="font-mono text-[10px]">Lagos, Nigeria • RC: Registered</p>
+          <div className="flex items-center gap-4 font-mono text-[10px]">
+            <Link href="/privacy" className="hover:text-[#090D16] underline">
+              Privacy
+            </Link>
+            <span>•</span>
+            <Link href="/terms" className="hover:text-[#090D16] underline">
+              Terms
+            </Link>
+            <span>•</span>
+            <span>Lagos, Nigeria</span>
+          </div>
         </div>
       </div>
     </footer>

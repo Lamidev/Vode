@@ -12,7 +12,7 @@ export default function Header() {
     <header className="sticky top-4 z-50 px-4 sm:px-6 w-full max-w-6xl mx-auto">
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 bg-white/95 backdrop-blur-xl border border-[#E2E8F0] rounded-xl shadow-[0_4px_20px_-4px_rgba(9,13,22,0.06)] transition-all">
         {/* Brand Logo */}
-        <Link href="#top" className="flex items-center gap-2.5 group">
+        <Link href="/" className="flex items-center gap-2.5 group">
           <div className="w-8 h-8 relative rounded-lg overflow-hidden border border-[#E2E8F0] shadow-2xs">
             <Image
               src="/logo.png"
@@ -30,32 +30,32 @@ export default function Header() {
         {/* Center Nav - Anchor Links (Desktop) */}
         <nav className="hidden md:flex items-center gap-8">
           <Link
-            href="#features"
+            href="/#features"
             className="text-[13.5px] font-medium text-[#525B6C] hover:text-[#090D16] transition-colors"
           >
             Features
           </Link>
           <Link
-            href="#how-it-works"
+            href="/#how-it-works"
             className="text-[13.5px] font-medium text-[#525B6C] hover:text-[#090D16] transition-colors"
           >
             How it works
           </Link>
           <Link
-            href="#security"
+            href="/#security"
             className="text-[13.5px] font-medium text-[#525B6C] hover:text-[#090D16] transition-colors"
           >
             Security
           </Link>
           <Link
-            href="#faq"
+            href="/#faq"
             className="text-[13.5px] font-medium text-[#525B6C] hover:text-[#090D16] transition-colors"
           >
             FAQ
           </Link>
         </nav>
 
-        {/* Right Action CTA (Desktop) - No dot, white arrow */}
+        {/* Right Action CTA (Desktop) */}
         <div className="hidden sm:flex items-center">
           <a
             href="https://wa.me/2348000000000?text=Hi%20Vode"
@@ -84,32 +84,46 @@ export default function Header() {
         <div className="md:hidden mt-2 p-5 bg-white border border-[#E2E8F0] rounded-xl shadow-xl space-y-4">
           <nav className="flex flex-col gap-3">
             <Link
-              href="#features"
+              href="/#features"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-medium text-[#090D16] py-1 border-b border-slate-100"
             >
               Features
             </Link>
             <Link
-              href="#how-it-works"
+              href="/#how-it-works"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-medium text-[#090D16] py-1 border-b border-slate-100"
             >
               How it works
             </Link>
             <Link
-              href="#security"
+              href="/#security"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-medium text-[#090D16] py-1 border-b border-slate-100"
             >
               Security
             </Link>
             <Link
-              href="#faq"
+              href="/#faq"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-medium text-[#090D16] py-1 border-b border-slate-100"
             >
               FAQ
+            </Link>
+            <Link
+              href="/privacy"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-medium text-[#525B6C] py-1 border-b border-slate-100"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-medium text-[#525B6C] py-1 border-b border-slate-100"
+            >
+              Terms of Service
             </Link>
           </nav>
 
