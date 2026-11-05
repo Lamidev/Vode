@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+:root {
+  --font-manrope: "Manrope", sans-serif;
+  --font-dm-sans: "DM Sans", sans-serif;
+
+  /* Vode Bespoke Fintech Identity */
+  --bg-page: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --text-ink: #090D16;
+  --text-muted: #525B6C;
+  --line-subtle: rgba(9, 13, 22, 0.08);
+  --line-strong: rgba(9, 13, 22, 0.16);
+
+  /* Signature Vode Accents */
+  --vode-mint: #00D084;
+  --vode-mint-hover: #00B875;
+  --vode-obsidian: #090D16;
+  --vode-cobalt: #1E40AF;
+  --vode-electric: #2563EB;
+}
+
+@theme {
+  --font-display: var(--font-manrope);
+  --font-body: var(--font-dm-sans);
+  --color-page: var(--bg-page);
+  --color-card: var(--bg-card);
+  --color-ink: var(--text-ink);
+  --color-muted: var(--text-muted);
+  --color-border: var(--line-subtle);
+  --color-vode-mint: var(--vode-mint);
+  --color-vode-obsidian: var(--vode-obsidian);
+  --color-vode-cobalt: var(--vode-cobalt);
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 24s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Subtle Fintech Topography Grid Pattern */
+.bg-vode-grid {
+  background-image: linear-gradient(to right, rgba(9, 13, 22, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(9, 13, 22, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Subtle mesh radiant glow */
+.bg-fintech-radial {
+  background: radial-gradient(circle at 50% 0%, rgba(0, 208, 132, 0.08) 0%, rgba(37, 99, 235, 0.04) 40%, transparent 70%);
+}
+
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-dm-sans);
+  background-color: var(--bg-page);
+  color: var(--text-ink);
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-manrope);
+  letter-spacing: -0.035em;
+}
