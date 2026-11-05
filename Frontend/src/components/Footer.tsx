@@ -22,20 +22,19 @@ export default function Footer() {
             href="https://wa.me/2348000000000?text=Hi%20Vode"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-[#090D16] hover:bg-[#00D084] hover:text-[#090D16] text-white text-sm font-semibold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-md group"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-[#090D16] hover:bg-[#1A202C] text-white text-sm font-semibold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-md group"
           >
-            <span className="w-2 h-2 rounded-full bg-[#00D084] group-hover:bg-[#090D16] animate-pulse" />
             <span>Try Vode Now</span>
-            <ArrowRight className="w-4 h-4 text-[#00D084] group-hover:text-[#090D16] transition-colors" />
+            <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
           </a>
         </div>
       </div>
 
       {/* Main Footer Info */}
       <div className="py-12 px-4 sm:px-6 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
-          {/* Brand Info */}
-          <div className="md:col-span-6 space-y-3">
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-8 mb-12">
+          {/* Brand Info (Full width on mobile, 6 cols on desktop) */}
+          <div className="col-span-2 md:col-span-6 space-y-3">
             <div className="flex items-center gap-2.5">
               <div className="w-7 h-7 relative rounded-md overflow-hidden border border-[#E2E8F0] shadow-2xs">
                 <Image
@@ -63,15 +62,15 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="md:col-span-3 space-y-2.5">
+          {/* Navigation (Left column on mobile, 3 cols on desktop) */}
+          <div className="col-span-1 md:col-span-3 space-y-2.5">
             <p className="text-xs font-mono font-semibold uppercase text-[#090D16] tracking-wider">
               Navigation
             </p>
             <ul className="space-y-2 text-xs text-[#525B6C]">
               <li>
                 <Link href="#features" className="hover:text-[#090D16]">
-                  Features & Bento
+                  Features
                 </Link>
               </li>
               <li>
@@ -81,7 +80,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="#security" className="hover:text-[#090D16]">
-                  Security Architecture
+                  Security
                 </Link>
               </li>
               <li>
@@ -92,8 +91,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Security & Emergency */}
-          <div className="md:col-span-3 space-y-2.5">
+          {/* Safety & Emergency (Opposite Navigation on mobile, 3 cols on desktop) */}
+          <div className="col-span-1 md:col-span-3 space-y-2.5">
             <p className="text-xs font-mono font-semibold uppercase text-[#090D16] tracking-wider">
               Safety & Emergency
             </p>

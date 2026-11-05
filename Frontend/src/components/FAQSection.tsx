@@ -48,9 +48,9 @@ export default function FAQSection() {
       className="py-20 sm:py-28 px-4 sm:px-6 max-w-4xl mx-auto border-t border-slate-200/80"
     >
       <div className="text-center mb-12 sm:mb-16">
-        <div className="inline-flex items-center px-3.5 py-1 rounded-full border border-slate-300 bg-white text-[11px] font-mono font-semibold tracking-wider text-[#090D16] uppercase shadow-2xs mb-4">
-          FREQUENTLY ASKED QUESTIONS
-        </div>
+        <span className="text-[11px] font-mono tracking-widest uppercase font-semibold text-[#525B6C] block mb-3">
+          [FREQUENTLY ASKED QUESTIONS]
+        </span>
         <h2 className="text-3xl sm:text-5xl font-display font-extrabold tracking-tight text-[#090D16]">
           Answers to your questions.
         </h2>

@@ -13,11 +13,10 @@ export default function EmergencyFreezeBanner() {
         <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-[#00D084]/10 via-[#1E40AF]/5 to-transparent blur-3xl pointer-events-none" />
 
         {/* Center Content Column */}
-        <div className="relative z-10 max-w-2xl mx-auto text-center space-y-5">
-          {/* Header Pill */}
-          <div className="inline-flex items-center px-4 py-1 rounded-full border border-rose-200 bg-rose-50 text-[11px] font-mono font-semibold tracking-wider text-rose-600 uppercase shadow-2xs">
-            INSTANT ACCOUNT KILL-SWITCH
-          </div>
+        <div className="relative z-10 max-w-2xl mx-auto text-center space-y-4">
+          <span className="text-[11px] font-mono tracking-widest uppercase font-semibold text-[#525B6C]">
+            [INSTANT ACCOUNT KILL-SWITCH]
+          </span>
 
           {/* Display Headline */}
           <h3 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold tracking-tight text-[#090D16] leading-[1.12]">

@@ -41,9 +41,9 @@ export default function HowItWorks() {
     <section id="how-it-works" className="py-20 sm:py-28 px-4 sm:px-6 max-w-6xl mx-auto border-t border-slate-200/80">
       {/* Top Header Row */}
       <div className="space-y-4 mb-16 sm:mb-20">
-        <div className="inline-flex items-center px-3.5 py-1 rounded-full border border-[#00D084]/30 bg-[#ECFDF5] text-[11px] font-mono font-semibold tracking-wider text-[#059669] uppercase">
-          ONBOARDING
-        </div>
+        <span className="text-[11px] font-mono tracking-widest uppercase font-semibold text-[#525B6C]">
+          [ONBOARDING]
+        </span>
 
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold tracking-tight text-[#090D16] max-w-xl leading-[1.06]">
