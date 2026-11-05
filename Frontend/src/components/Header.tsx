@@ -58,7 +58,7 @@ export default function Header() {
         {/* Right Action CTA (Desktop) */}
         <div className="hidden sm:flex items-center">
           <a
-            href="https://wa.me/2348000000000?text=Hi%20Vode"
+            href="https://wa.me/2347071238658?text=Hi%20Vode"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#090D16] hover:bg-[#1A202C] text-white text-xs font-semibold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-xs group"
@@ -128,7 +128,7 @@ export default function Header() {
           </nav>
 
           <a
-            href="https://wa.me/2348000000000?text=Hi%20Vode"
+            href="https://wa.me/2347071238658?text=Hi%20Vode"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full py-3 bg-[#090D16] text-white text-xs font-semibold rounded-md shadow-xs"

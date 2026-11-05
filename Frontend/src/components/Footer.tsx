@@ -19,7 +19,7 @@ export default function Footer() {
 
         <div className="mt-8 flex justify-center">
           <a
-            href="https://wa.me/2348000000000?text=Hi%20Vode"
+            href="https://wa.me/2347071238658?text=Hi%20Vode"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-8 py-4 bg-[#090D16] hover:bg-[#1A202C] text-white text-sm font-semibold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-md group"

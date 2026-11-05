@@ -190,7 +190,7 @@ export default function Hero() {
         {/* Action CTAs */}
         <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5">
           <a
-            href="https://wa.me/2348000000000?text=Hi%20Vode"
+            href="https://wa.me/2347071238658?text=Hi%20Vode"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-[#090D16] hover:bg-[#1A202C] text-white text-sm font-semibold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-md group"
