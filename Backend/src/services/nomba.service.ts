@@ -113,34 +113,37 @@ export class NombaService {
   }): Promise<NombaVirtualAccountResponse | null> {
     try {
       const token = await this.getAuthToken();
-      const email = `${params.phoneNumber.replace("+", "")}@usevode.com`;
+      const fullName = `${params.firstName} ${params.lastName}`.trim();
+
+      const payload: any = {
+        accountRef: params.accountRef,
+        accountName: fullName,
+        currency: "NGN",
+      };
+
+      if (params.bvn && params.bvn.length === 11) {
+        payload.bvn = params.bvn;
+      }
 
       const response = await axios.post(
-        `${env.NOMBA_BASE_URL}/virtual-accounts`,
-        {
-          accountRef: params.accountRef,
-          phoneNumber: params.phoneNumber,
-          email,
-          bvn: params.bvn || "",
-          firstName: params.firstName,
-          lastName: params.lastName,
-          currency: "NGN",
-        },
+        `${env.NOMBA_BASE_URL}/accounts/virtual`,
+        payload,
         {
           headers: {
             Authorization: `Bearer ${token}`,
             accountId: env.NOMBA_ACCOUNT_ID,
+            "Content-Type": "application/json",
           },
         }
       );
 
-      const data = response.data.data || response.data;
+      const data = response.data?.data || response.data;
 
       return {
-        accountNumber: data.accountNumber,
-        accountName: data.accountName,
-        bankName: data.bankName || "Wema Bank / Titan Trust",
-        bankCode: data.bankCode || "035",
+        accountNumber: data.bankAccountNumber || data.accountNumber,
+        accountName: data.bankAccountName || data.accountName || fullName,
+        bankName: data.bankName || "Nombank MFB",
+        bankCode: data.bankCode || "090645",
         accountRef: params.accountRef,
       };
     } catch (error: any) {
@@ -153,7 +156,40 @@ export class NombaService {
   }
 
   /**
-   * Execute an outward bank transfer over NIP rails
+   * Fetch all supported Nigerian banks with caching
+   */
+  private static cachedBanks: Array<{ name: string; code: string; nipCode: string | null }> = [];
+  private static banksExpiresAt: number = 0;
+
+  static async getBanks(): Promise<Array<{ name: string; code: string; nipCode: string | null }>> {
+    const now = Date.now();
+    if (this.cachedBanks.length > 0 && this.banksExpiresAt > now) {
+      return this.cachedBanks;
+    }
+
+    try {
+      const token = await this.getAuthToken();
+      const response = await axios.get(`${env.NOMBA_BASE_URL}/transfers/banks`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          accountId: env.NOMBA_ACCOUNT_ID,
+        },
+      });
+
+      if (response.data?.data && Array.isArray(response.data.data)) {
+        this.cachedBanks = response.data.data;
+        this.banksExpiresAt = now + 24 * 3600 * 1000; // cache 24h
+        return this.cachedBanks;
+      }
+      return [];
+    } catch (error: any) {
+      logger.warn({ error: error.response?.data || error.message }, "Failed to fetch banks list");
+      return [];
+    }
+  }
+
+  /**
+   * Execute an outward bank transfer over NIP rails (Nomba v2 API)
    */
   static async sendBankTransfer(params: {
     merchantTxRef: string;
@@ -161,31 +197,38 @@ export class NombaService {
     recipientAccountNumber: string;
     recipientBankCode: string;
     recipientName: string;
+    senderName?: string;
     narration: string;
   }): Promise<{ success: boolean; status: string; partnerRef?: string }> {
     try {
       const token = await this.getAuthToken();
+      // Nomba v2 transfer endpoint
+      const v2Url = env.NOMBA_BASE_URL.replace("/v1", "/v2");
       const response = await axios.post(
-        `${env.NOMBA_BASE_URL}/transfers/bank`,
+        `${v2Url}/transfers/bank`,
         {
           merchantTxRef: params.merchantTxRef,
           amount: params.amountInNaira,
           accountNumber: params.recipientAccountNumber,
           bankCode: params.recipientBankCode,
           accountName: params.recipientName,
+          senderName: params.senderName || "Vode User",
           narration: params.narration,
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
             accountId: env.NOMBA_ACCOUNT_ID,
+            "Content-Type": "application/json",
           },
         }
       );
 
       const status = response.data.data?.status || response.data.status || "SUCCESS";
+      const isOk = status === "SUCCESS" || status === "PENDING_BILLING" || status === "NEW";
+
       return {
-        success: status === "SUCCESS" || status === "PENDING",
+        success: isOk,
         status,
         partnerRef: response.data.data?.id || response.data.id,
       };
