@@ -168,17 +168,31 @@ export default function Hero() {
   return (
     <section id="top" className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden">
       {/* Ambient Hero Gradient Canopy & Precision Pattern */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[620px] pointer-events-none -z-10 overflow-hidden [mask-image:radial-gradient(ellipse_65%_55%_at_50%_15%,#000_65%,transparent_100%)]">
-        {/* Soft Multi-stop Radial Glow (Mint + Sage + Cobalt) */}
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[720px] sm:w-[960px] h-[440px] bg-gradient-to-b from-[#00D084]/16 via-[#00D084]/6 to-transparent blur-3xl opacity-80" />
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[540px] h-[320px] bg-gradient-to-tr from-[#1E40AF]/6 via-[#E6F0EA]/35 to-transparent blur-2xl opacity-75" />
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[650px] pointer-events-none z-0 overflow-hidden"
+        style={{
+          WebkitMaskImage: "radial-gradient(ellipse 80% 70% at 50% 25%, black 45%, transparent 95%)",
+          maskImage: "radial-gradient(ellipse 80% 70% at 50% 25%, black 45%, transparent 95%)",
+        }}
+      >
+        {/* Soft Multi-stop Radial Glow (Vode Mint + Electric Cobalt) */}
+        <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-[720px] sm:w-[920px] h-[400px] bg-gradient-to-b from-[#00D084]/25 via-[#00D084]/10 to-transparent blur-3xl" />
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[520px] h-[300px] bg-gradient-to-tr from-[#1E40AF]/14 via-[#00D084]/12 to-transparent blur-2xl" />
 
-        {/* Precision Micro-Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(9,13,22,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(9,13,22,0.035)_1px,transparent_1px)] bg-[size:36px_36px]" />
+        {/* Crisp Vector Grid Pattern with Mint Dots */}
+        <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="hero-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(9, 13, 22, 0.08)" strokeWidth="1" />
+              <circle cx="40" cy="40" r="1.5" fill="rgba(0, 208, 132, 0.35)" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#hero-grid)" />
+        </svg>
 
-        {/* Subtle Financial Radial Rings */}
-        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[520px] h-[520px] rounded-full border border-[#00D084]/15" />
-        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[820px] h-[820px] rounded-full border border-dashed border-[#090D16]/5" />
+        {/* Concentric Financial Vault Rings */}
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[480px] h-[480px] rounded-full border border-[#00D084]/25" />
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[760px] h-[760px] rounded-full border border-dashed border-[#090D16]/12" />
       </div>
 
       {/* Clean Unboxed Hero Content */}
