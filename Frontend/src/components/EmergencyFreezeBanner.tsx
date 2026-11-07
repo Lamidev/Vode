@@ -15,17 +15,17 @@ export default function EmergencyFreezeBanner() {
         {/* Center Content Column */}
         <div className="relative z-10 max-w-2xl mx-auto text-center space-y-4">
           <span className="text-[11px] font-mono tracking-widest uppercase font-semibold text-[#525B6C]">
-            [INSTANT ACCOUNT KILL-SWITCH]
+            [EMERGENCY PROTECTION]
           </span>
 
           {/* Display Headline */}
           <h3 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold tracking-tight text-[#090D16] leading-[1.12]">
-            Lost Your Phone? Secure Your Vode Instantly.
+            Lost Your Phone? Lock Your Vode Instantly.
           </h3>
 
           {/* Subtext */}
           <p className="text-xs sm:text-sm md:text-base text-[#525B6C] leading-relaxed max-w-xl mx-auto font-normal">
-            If your device is stolen or compromised, freeze your Vode account immediately from any browser. We pause all ledger movement and guide you through verified recovery.
+            If your phone is ever lost or stolen, freeze your Vode account with one click from any web browser on any device. Nobody will be able to spend a single kobo until you unlock it.
           </p>
 
           {/* Action Buttons */}

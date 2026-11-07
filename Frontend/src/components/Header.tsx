@@ -63,7 +63,7 @@ export default function Header() {
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#090D16] hover:bg-[#1A202C] text-white text-xs font-semibold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-xs group"
           >
-            <span>Try Vode</span>
+            <span>Try Vode on WhatsApp</span>
             <ArrowUpRight className="w-3.5 h-3.5 text-white opacity-90 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </a>
         </div>
@@ -133,7 +133,7 @@ export default function Header() {
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full py-3 bg-[#090D16] text-white text-xs font-semibold rounded-md shadow-xs"
           >
-            <span>Try Vode Now</span>
+            <span>Try Vode on WhatsApp</span>
             <ArrowUpRight className="w-4 h-4 text-white" />
           </a>
         </div>

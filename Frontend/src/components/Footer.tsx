@@ -24,7 +24,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-8 py-4 bg-[#090D16] hover:bg-[#1A202C] text-white text-sm font-semibold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-md group"
           >
-            <span>Try Vode Now</span>
+            <span>Try Vode on WhatsApp</span>
             <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
           </a>
         </div>

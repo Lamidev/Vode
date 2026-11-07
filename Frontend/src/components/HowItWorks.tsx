@@ -12,26 +12,26 @@ interface Step {
 const STEPS: Step[] = [
   {
     step: "Step 01",
-    title: 'Click “Try Vode Now”',
-    desc: "This connects you directly to Vode’s official verified chat on WhatsApp",
+    title: 'Click "Try on WhatsApp"',
+    desc: "Tap any button on this page to open our official verified chat on WhatsApp.",
     offsetClass: "md:translate-y-24",
   },
   {
     step: "Step 02",
-    title: 'Send “Hi Vode”',
-    desc: "Message Vode and open the instant 60-second onboarding sheet",
+    title: 'Say "Hi"',
+    desc: "Send a quick hello, and Vode opens your private 60-second registration sheet.",
     offsetClass: "md:translate-y-16",
   },
   {
     step: "Step 03",
-    title: "Verify & set PIN",
-    desc: "Confirm your identity and set your private 4-digit transaction PIN",
+    title: "Create Your 4-Digit PIN",
+    desc: "Set your confidential 4-digit PIN in our secure form to keep your money safe.",
     offsetClass: "md:translate-y-8",
   },
   {
     step: "Step 04",
-    title: "Start banking",
-    desc: "Receive your permanent NUBAN, send transfers, and pay utility bills",
+    title: "You're Ready to Go!",
+    desc: "Receive your 10-digit account number immediately. Top it up, send money, and pay bills.",
     offsetClass: "md:translate-y-0",
   },
 ];
@@ -42,15 +42,15 @@ export default function HowItWorks() {
       {/* Top Header Row */}
       <div className="space-y-4 mb-16 sm:mb-20">
         <span className="text-[11px] font-mono tracking-widest uppercase font-semibold text-[#525B6C]">
-          [ONBOARDING]
+          [EASY 4-STEP SETUP]
         </span>
 
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold tracking-tight text-[#090D16] max-w-xl leading-[1.06]">
-            Up and running in under Two minutes.
+            Up and running in under two minutes.
           </h2>
           <p className="text-sm sm:text-base text-[#525B6C] max-w-md font-normal leading-relaxed">
-            Most banking apps require lengthy paperwork and downloads. Vode accepts however you communicate—voice notes, receipts, or simple text.
+            No paperwork, no branch visits, and zero app downloads. Setting up your Vode account is as simple as sending a chat message.
           </p>
         </div>
       </div>

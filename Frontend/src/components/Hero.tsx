@@ -52,13 +52,13 @@ export default function Hero() {
   };
 
   const CARDS: AnchorCard[] = [
-    // Card 1: Zero App Footprint (Anchor Style - Soft Sage)
+    // Card 1: No App to Download (Anchor Style - Soft Sage)
     {
       id: "card-1",
       badge: "0.0 MB",
-      title: "Zero App Footprint",
+      title: "No App to Download",
       description:
-        "Standard bank apps take 400MB+ storage. Vode runs 100% inside your existing WhatsApp.",
+        "Traditional bank apps eat up 400MB+ of phone memory. Vode works 100% inside the WhatsApp you already have.",
       bgClass: "bg-[#E6F0EA]",
       textColor: "text-[#1B3828]",
       tabBg: "bg-[#183525]",
@@ -75,13 +75,13 @@ export default function Hero() {
       ),
     },
 
-    // Card 2: Permanent NUBAN (Anchor Style - Deep Navy Obsidian)
+    // Card 2: Your Own Account Number (Anchor Style - Deep Navy Obsidian)
     {
       id: "card-2",
       badge: "ACTIVE",
-      title: "Permanent NUBAN",
+      title: "Your Own Account Number",
       description:
-        "A dedicated 10-digit account in your legal name. Receives funds from any bank in Nigeria.",
+        "Get a real 10-digit Nigerian bank account in your name. Anyone from GTBank, OPay, or Zenith can send you money.",
       bgClass: "bg-[#1E2536]",
       textColor: "text-white",
       tabBg: "bg-[#E6F0EA]",
@@ -90,12 +90,12 @@ export default function Hero() {
         <div className="w-full flex flex-col items-center justify-center py-4">
           <div className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3 text-left shadow-md">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[9px] font-mono uppercase text-white/70">Dedicated Account</span>
+              <span className="text-[9px] font-mono uppercase text-white/70">Personal Bank Account</span>
               <ShieldCheck className="w-3.5 h-3.5 text-[#00D084]" />
             </div>
-            <p className="font-mono font-bold text-xs sm:text-sm text-white tracking-wide">0123 456 789</p>
+            <p className="font-mono font-bold text-sm text-white tracking-wider whitespace-nowrap">0123 456 789</p>
             <div className="mt-2 pt-2 border-t border-white/10 flex justify-between items-center text-[10px] text-white/70">
-              <span>Tier-1 Rails</span>
+              <span>All Nigerian Banks</span>
               <button
                 onClick={handleCopy}
                 type="button"
@@ -110,13 +110,13 @@ export default function Hero() {
       ),
     },
 
-    // Card 3: Zero Plaintext PINs (Anchor Style - Warm Cream Sand)
+    // Card 3: Safe 4-Digit PIN (Anchor Style - Warm Cream Sand)
     {
       id: "card-3",
-      badge: "AES-256",
-      title: "Zero Plaintext PINs",
+      badge: "PRIVATE PIN",
+      title: "Safe 4-Digit PIN",
       description:
-        "Never type your PIN in WhatsApp chat. Authorize payments via a 90-second encrypted sheet.",
+        "Your money is locked with your private PIN. You never type it in open chat, so nobody can ever see it.",
       bgClass: "bg-[#F5ECE1]",
       textColor: "text-[#382C1E]",
       tabBg: "bg-[#382C1E]",
@@ -137,13 +137,13 @@ export default function Hero() {
       ),
     },
 
-    // Card 4: Speak & Snap Native (Anchor Style - Warm Terracotta)
+    // Card 4: Pay by Voice or Photo (Anchor Style - Warm Terracotta)
     {
       id: "card-4",
-      badge: "AI ENGINE",
-      title: "Speak & Snap Native",
+      badge: "VOICE & PHOTO",
+      title: "Pay by Voice or Photo",
       description:
-        "Send a voice note or snap any receipt. Vode automatically resolves recipient bank and amount.",
+        "Too tired to type? Send a voice note like 'Send 5k to Mummy' or snap a photo of any bill. Vode handles the rest.",
       bgClass: "bg-[#D96B27]",
       textColor: "text-white",
       tabBg: "bg-[#1E2536]",
@@ -157,7 +157,7 @@ export default function Hero() {
             </div>
             <div className="flex items-center gap-2 text-xs text-white/80 pt-1 border-t border-white/10">
               <Camera className="w-3.5 h-3.5" />
-              <span className="font-medium text-[11px]">Receipt OCR detected</span>
+              <span className="font-medium text-[11px]">Receipt detected</span>
             </div>
           </div>
         </div>
@@ -172,19 +172,19 @@ export default function Hero() {
         {/* Bracket Notation Eyebrow */}
         <div className="flex items-center justify-center">
           <span className="text-[11px] font-mono tracking-widest uppercase font-semibold text-[#525B6C]">
-            [WHATSAPP-FIRST DIGITAL FINANCE]
+            [YOUR BANK ACCOUNT INSIDE WHATSAPP]
           </span>
         </div>
 
         {/* Display Headline */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-display font-extrabold tracking-tight leading-[1.06] text-[#090D16]">
-          Everyday money, <br className="hidden sm:inline" />
-          right inside your WhatsApp.
+          Send, receive, and spend money. <br className="hidden sm:inline" />
+          Right inside WhatsApp.
         </h1>
 
         {/* Subhead */}
         <p className="text-base sm:text-lg md:text-xl text-[#525B6C] max-w-2xl mx-auto font-normal leading-relaxed">
-          Send money with a voice note (<strong className="font-semibold text-[#090D16]">Speak to Pay</strong>), settle bills by sending a photo (<strong className="font-semibold text-[#090D16]">Snap & Pay</strong>), and receive transfers into your permanent 10-digit NUBAN. Zero app downloads.
+          Get your own 10-digit Nigerian bank account in 60 seconds. Send money with a voice note, pay bills by sending a photo, and buy airtime or data. No app to download. Zero storage used.
         </p>
 
         {/* Action CTAs */}
@@ -195,7 +195,7 @@ export default function Hero() {
             rel="noopener noreferrer"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-[#090D16] hover:bg-[#1A202C] text-white text-sm font-semibold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-md group"
           >
-            <span>Try Vode Now</span>
+            <span>Try Vode on WhatsApp</span>
             <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
           </a>
 

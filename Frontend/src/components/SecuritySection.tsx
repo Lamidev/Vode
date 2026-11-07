@@ -38,15 +38,15 @@ export default function SecuritySection() {
       {/* Top Header Row */}
       <div className="space-y-4 mb-14 sm:mb-18">
         <span className="text-[11px] font-mono tracking-widest uppercase font-semibold text-[#525B6C]">
-          [VODE SECURITY ARCHITECTURE]
+          [BANK-GRADE SAFETY]
         </span>
 
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold tracking-tight text-[#090D16] max-w-xl leading-[1.06]">
-            Secured with multiple layers of financial defense.
+            Your money is safe, insured, and under your control.
           </h2>
           <p className="text-sm sm:text-base text-[#525B6C] max-w-md font-normal leading-relaxed">
-            Your money is protected at every step—from one-time encrypted PIN authorization to the institutional bank-grade ledger running quietly behind it.
+            Protected at every step—from one-time private PIN authorization to the licensed banking partners safeguarding your funds.
           </p>
         </div>
       </div>
