@@ -168,9 +168,9 @@ export default function Hero() {
   return (
     <section id="top" className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden bg-vode-grid rounded-3xl">
       {/* Ambient Top Glow & Concentric Vault Rings (Exact Match to Emergency Protection) */}
-      <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-[#00D084]/22 via-[#1E40AF]/10 to-transparent blur-3xl pointer-events-none" />
-      <div className="absolute top-[260px] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] rounded-full border border-[#00D084]/25 pointer-events-none" />
-      <div className="absolute top-[260px] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] h-[760px] rounded-full border border-dashed border-[#090D16]/12 pointer-events-none" />
+      <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-[#00D084]/22 via-[#1E40AF]/10 to-transparent blur-3xl pointer-events-none transform-gpu" />
+      <div className="absolute top-[260px] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] rounded-full border border-[#00D084]/25 pointer-events-none transform-gpu" />
+      <div className="absolute top-[260px] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] h-[760px] rounded-full border border-dashed border-[#090D16]/12 pointer-events-none transform-gpu" />
 
       {/* Clean Unboxed Hero Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto space-y-6">
@@ -223,7 +223,7 @@ export default function Hero() {
               style={{
                 transitionDelay: `${index * 130}ms`,
               }}
-              className={`w-full min-h-[420px] rounded-3xl p-6 flex flex-col justify-between ${card.bgClass} shadow-[0_8px_24px_-6px_rgba(0,0,0,0.06)] border border-black/5 hover:-translate-y-1.5 transition-all duration-700 ease-out ${
+              className={`w-full min-h-[420px] rounded-3xl p-6 flex flex-col justify-between ${card.bgClass} shadow-[0_8px_24px_-6px_rgba(0,0,0,0.06)] border border-black/5 hover:-translate-y-1.5 transition-[transform,opacity] duration-700 ease-out transform-gpu ${
                 inView ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0"
               }`}
             >

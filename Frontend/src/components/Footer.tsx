@@ -11,9 +11,9 @@ export default function Footer() {
       {/* Pre-Footer Action Banner (Matching Emergency Protection) */}
       <div className="relative overflow-hidden py-18 sm:py-28 px-4 sm:px-6 max-w-6xl mx-auto text-center border-b border-slate-200/80 bg-vode-grid">
         {/* Ambient Top Glow & Concentric Vault Rings */}
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-[#00D084]/22 via-[#1E40AF]/10 to-transparent blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] rounded-full border border-[#00D084]/25 pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] h-[760px] rounded-full border border-dashed border-[#090D16]/12 pointer-events-none" />
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-[#00D084]/22 via-[#1E40AF]/10 to-transparent blur-3xl pointer-events-none transform-gpu" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] rounded-full border border-[#00D084]/25 pointer-events-none transform-gpu" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] h-[760px] rounded-full border border-dashed border-[#090D16]/12 pointer-events-none transform-gpu" />
 
         <div className="relative z-10">
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold tracking-tight text-[#090D16] max-w-2xl mx-auto leading-tight">
@@ -43,12 +43,13 @@ export default function Footer() {
           {/* Brand Info (Full width on mobile, 6 cols on desktop) */}
           <div className="col-span-2 md:col-span-6 space-y-3">
             <Link href="/" className="inline-flex items-center gap-2.5">
-              <div className="w-7 h-7 relative rounded-md overflow-hidden border border-[#E2E8F0] shadow-2xs">
+              <div className="w-7 h-7 rounded-md overflow-hidden border border-[#E2E8F0] shadow-2xs shrink-0 flex items-center justify-center">
                 <Image
                   src="/logo.png"
                   alt="Vode"
-                  fill
-                  className="object-cover"
+                  width={28}
+                  height={28}
+                  className="w-full h-full object-cover"
                 />
               </div>
               <span className="font-display font-extrabold text-lg text-[#090D16]">

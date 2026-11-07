@@ -19,7 +19,7 @@ export default function BentoFeatures() {
       {/* 4-Box Asymmetric Bento Grid - Refined Sophisticated Palette */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6">
         {/* Box 1: An Account Number in Your Name (Span 7) */}
-        <div className="md:col-span-7 bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-[#090D16]/30 transition-all">
+        <div className="md:col-span-7 bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-[#090D16]/30 transition-colors duration-200">
           <div>
             <div className="flex items-center justify-between mb-5">
               <span className="px-2.5 py-1 text-[11px] font-mono font-semibold tracking-wider uppercase bg-slate-100 border border-slate-200 text-[#090D16] rounded-md">
@@ -71,7 +71,7 @@ export default function BentoFeatures() {
         </div>
 
         {/* Box 2: Voice & Photos (Span 5) */}
-        <div className="md:col-span-5 bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-[#090D16]/30 transition-all">
+        <div className="md:col-span-5 bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-[#090D16]/30 transition-colors duration-200">
           <div>
             <div className="flex items-center justify-between mb-5">
               <span className="px-2.5 py-1 text-[11px] font-mono font-semibold tracking-wider uppercase bg-slate-100 border border-slate-200 text-[#090D16] rounded-md">
@@ -112,7 +112,7 @@ export default function BentoFeatures() {
         </div>
 
         {/* Box 3: Send Money in Seconds (Span 5) */}
-        <div className="md:col-span-5 bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-[#090D16]/30 transition-all">
+        <div className="md:col-span-5 bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-[#090D16]/30 transition-colors duration-200">
           <div>
             <div className="flex items-center justify-between mb-5">
               <span className="px-2.5 py-1 text-[11px] font-mono font-semibold tracking-wider uppercase bg-slate-100 border border-slate-200 text-[#090D16] rounded-md">
@@ -141,7 +141,7 @@ export default function BentoFeatures() {
         </div>
 
         {/* Box 4: Airtime & Bills (Span 7) */}
-        <div className="md:col-span-7 bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-[#090D16]/30 transition-all">
+        <div className="md:col-span-7 bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-[#090D16]/30 transition-colors duration-200">
           <div>
             <div className="flex items-center justify-between mb-5">
               <span className="px-2.5 py-1 text-[11px] font-mono font-semibold tracking-wider uppercase bg-slate-100 border border-slate-200 text-[#090D16] rounded-md">

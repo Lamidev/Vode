@@ -55,7 +55,7 @@ export default function SecuritySection() {
       {/* 3-Card Crisp Elevated Fintech Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Card 1: Passcode for every payment */}
-        <div className="flex flex-col justify-between bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-7 shadow-[0_4px_20px_-4px_rgba(9,13,22,0.04)] hover:shadow-lg transition-all duration-300">
+        <div className="flex flex-col justify-between bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-7 shadow-[0_4px_20px_-4px_rgba(9,13,22,0.04)] hover:shadow-lg transition-shadow duration-300">
           <div>
             <div className="flex items-center justify-between">
               <h3 className="text-base sm:text-lg font-display font-bold text-[#090D16]">
@@ -104,7 +104,7 @@ export default function SecuritySection() {
         </div>
 
         {/* Card 2: NDPC – Certified */}
-        <div className="flex flex-col justify-between bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-7 shadow-[0_4px_20px_-4px_rgba(9,13,22,0.04)] hover:shadow-lg transition-all duration-300">
+        <div className="flex flex-col justify-between bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-7 shadow-[0_4px_20px_-4px_rgba(9,13,22,0.04)] hover:shadow-lg transition-shadow duration-300">
           <div>
             <div className="flex items-center justify-between">
               <h3 className="text-base sm:text-lg font-display font-bold text-[#090D16]">
@@ -151,7 +151,7 @@ export default function SecuritySection() {
         {/* Card 3: Lock Vode Chat (Animated Sliding Padlock) */}
         <div
           ref={padlockRef}
-          className="flex flex-col justify-between bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-7 shadow-[0_4px_20px_-4px_rgba(9,13,22,0.04)] hover:shadow-lg transition-all duration-300 cursor-pointer"
+          className="flex flex-col justify-between bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-7 shadow-[0_4px_20px_-4px_rgba(9,13,22,0.04)] hover:shadow-lg transition-shadow duration-300 cursor-pointer"
           onClick={() => setIsLocked(!isLocked)}
           title="Click to toggle lock state"
         >
@@ -172,7 +172,7 @@ export default function SecuritySection() {
             {/* Visual: Animated Obsidian & Emerald Padlock */}
             <div className="my-8 flex justify-center items-center">
               <div
-                className={`relative w-44 h-44 flex flex-col items-center justify-center transition-all duration-700 ease-out ${
+                className={`relative w-44 h-44 flex flex-col items-center justify-center transition-[transform,opacity] duration-700 ease-out transform-gpu ${
                   hasAnimated ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0"
                 }`}
               >

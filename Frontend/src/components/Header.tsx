@@ -9,16 +9,17 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-4 z-50 px-4 sm:px-6 w-full max-w-6xl mx-auto">
-      <div className="flex items-center justify-between px-4 sm:px-6 py-3 bg-white/95 backdrop-blur-xl border border-[#E2E8F0] rounded-xl shadow-[0_4px_20px_-4px_rgba(9,13,22,0.06)] transition-all">
+    <header className="sticky top-4 z-50 px-4 sm:px-6 w-full max-w-6xl mx-auto transform-gpu">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3 bg-white/95 backdrop-blur-md border border-[#E2E8F0] rounded-xl shadow-[0_4px_20px_-4px_rgba(9,13,22,0.06)] transition-colors">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 relative rounded-lg overflow-hidden border border-[#E2E8F0] shadow-2xs">
+          <div className="w-8 h-8 rounded-lg overflow-hidden border border-[#E2E8F0] shadow-2xs shrink-0 flex items-center justify-center">
             <Image
               src="/logo.png"
               alt="Vode"
-              fill
-              className="object-cover"
+              width={32}
+              height={32}
+              className="w-full h-full object-cover"
               priority
             />
           </div>

@@ -71,14 +71,14 @@ const BANKS: BankItem[] = [
 export default function BankTicker() {
   return (
     <div className="w-full overflow-hidden py-3 select-none">
-      <div className="flex w-max gap-3 sm:gap-3.5 animate-marquee items-center">
+      <div className="flex w-max gap-3 sm:gap-3.5 animate-marquee items-center gpu-layer">
         {/* Double sequence for a mathematically seamless infinite loop (-50%) */}
         {[...BANKS, ...BANKS].map((bank, idx) => {
           const LogoComponent = bank.Logo;
           return (
             <div
               key={idx}
-              className="flex items-center gap-2.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-white/95 border border-[#E2E8F0] hover:border-[#00D084]/50 rounded-xl shadow-[0_2px_8px_rgba(15,23,42,0.04)] flex-shrink-0 transition-all hover:scale-105"
+              className="flex items-center gap-2.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-white/95 border border-[#E2E8F0] hover:border-[#00D084]/50 rounded-xl shadow-[0_2px_8px_rgba(15,23,42,0.04)] flex-shrink-0 transition-transform duration-200 hover:scale-105 transform-gpu"
             >
               <div className="w-6 h-6 rounded-md overflow-hidden flex items-center justify-center flex-shrink-0 shadow-2xs">
                 <LogoComponent className="w-6 h-6" />
