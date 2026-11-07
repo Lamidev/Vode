@@ -167,8 +167,22 @@ export default function Hero() {
 
   return (
     <section id="top" className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden">
+      {/* Ambient Hero Gradient Canopy & Precision Pattern */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[620px] pointer-events-none -z-10 overflow-hidden [mask-image:radial-gradient(ellipse_65%_55%_at_50%_15%,#000_65%,transparent_100%)]">
+        {/* Soft Multi-stop Radial Glow (Mint + Sage + Cobalt) */}
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[720px] sm:w-[960px] h-[440px] bg-gradient-to-b from-[#00D084]/16 via-[#00D084]/6 to-transparent blur-3xl opacity-80" />
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[540px] h-[320px] bg-gradient-to-tr from-[#1E40AF]/6 via-[#E6F0EA]/35 to-transparent blur-2xl opacity-75" />
+
+        {/* Precision Micro-Grid Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(9,13,22,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(9,13,22,0.035)_1px,transparent_1px)] bg-[size:36px_36px]" />
+
+        {/* Subtle Financial Radial Rings */}
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[520px] h-[520px] rounded-full border border-[#00D084]/15" />
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[820px] h-[820px] rounded-full border border-dashed border-[#090D16]/5" />
+      </div>
+
       {/* Clean Unboxed Hero Content */}
-      <div className="text-center max-w-4xl mx-auto space-y-6">
+      <div className="relative z-10 text-center max-w-4xl mx-auto space-y-6">
         {/* Bracket Notation Eyebrow */}
         <div className="flex items-center justify-center">
           <span className="text-[11px] font-mono tracking-widest uppercase font-semibold text-[#525B6C]">

@@ -8,25 +8,35 @@ import { ArrowRight, Mail } from "lucide-react";
 export default function Footer() {
   return (
     <footer className="border-t border-slate-200/80 bg-white">
-      {/* Pre-Footer Action Banner */}
-      <div className="py-16 sm:py-24 px-4 sm:px-6 max-w-6xl mx-auto text-center border-b border-slate-200/80">
-        <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold tracking-tight text-[#090D16] max-w-2xl mx-auto leading-tight">
-          Ready to experience everyday money in WhatsApp?
-        </h2>
-        <p className="mt-4 text-sm sm:text-base text-[#525B6C] max-w-lg mx-auto">
-          No app downloads. No waiting in lines. Start with a simple "Hi" right now.
-        </p>
+      {/* Pre-Footer Action Banner with Geometric Mint Canopy */}
+      <div className="relative overflow-hidden py-18 sm:py-28 px-4 sm:px-6 max-w-6xl mx-auto text-center border-b border-slate-200/80">
+        {/* Ambient Glow & Micro-Grid Mirroring the Hero */}
+        <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden [mask-image:radial-gradient(ellipse_75%_65%_at_50%_50%,#000_60%,transparent_100%)]">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[300px] bg-gradient-to-b from-[#00D084]/15 via-[#E6F0EA]/30 to-transparent blur-3xl opacity-80" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(9,13,22,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(9,13,22,0.035)_1px,transparent_1px)] bg-[size:36px_36px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[460px] h-[460px] rounded-full border border-[#00D084]/12" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[720px] rounded-full border border-dashed border-[#090D16]/5" />
+        </div>
 
-        <div className="mt-8 flex justify-center">
-          <a
-            href="https://wa.me/2347071238658?text=Hi%20Vode"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-[#090D16] hover:bg-[#1A202C] text-white text-sm font-semibold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-md group"
-          >
-            <span>Try Vode on WhatsApp</span>
-            <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
-          </a>
+        <div className="relative z-10">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold tracking-tight text-[#090D16] max-w-2xl mx-auto leading-tight">
+            Ready to experience everyday money in WhatsApp?
+          </h2>
+          <p className="mt-4 text-sm sm:text-base text-[#525B6C] max-w-lg mx-auto">
+            No app downloads. No waiting in lines. Start with a simple "Hi" right now.
+          </p>
+
+          <div className="mt-8 flex justify-center">
+            <a
+              href="https://wa.me/2347071238658?text=Hi%20Vode"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-[#090D16] hover:bg-[#1A202C] text-white text-sm font-semibold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-md group"
+            >
+              <span>Try Vode on WhatsApp</span>
+              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
+            </a>
+          </div>
         </div>
       </div>
 

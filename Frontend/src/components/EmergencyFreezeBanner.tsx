@@ -9,8 +9,10 @@ export default function EmergencyFreezeBanner() {
     <section className="py-14 sm:py-20 px-4 sm:px-6 max-w-6xl mx-auto">
       {/* Vode Instant Block Card */}
       <div className="relative overflow-hidden bg-white border border-[#E2E8F0] rounded-2xl sm:rounded-3xl p-6 sm:p-12 md:p-16 shadow-[0_20px_50px_-20px_rgba(9,13,22,0.08)] bg-vode-grid">
-        {/* Ambient Top Glow */}
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-[#00D084]/10 via-[#1E40AF]/5 to-transparent blur-3xl pointer-events-none" />
+        {/* Ambient Top Glow & Concentric Vault Rings */}
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-[#00D084]/12 via-[#1E40AF]/6 to-transparent blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] rounded-full border border-[#00D084]/12 pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] h-[760px] rounded-full border border-dashed border-[#090D16]/5 pointer-events-none" />
 
         {/* Center Content Column */}
         <div className="relative z-10 max-w-2xl mx-auto text-center space-y-4">
