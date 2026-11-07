@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 
 export default function SecuritySection() {
@@ -121,105 +122,16 @@ export default function SecuritySection() {
                 <div className="absolute inset-0 rounded-full bg-emerald-50/60" />
                 <div className="absolute inset-4 rounded-full bg-emerald-100/40" />
 
-                {/* Exact NDPC Shield SVG */}
-                <div className="relative z-10 w-28 h-32 flex flex-col items-center justify-center filter drop-shadow-[0_8px_16px_rgba(0,102,51,0.18)]">
-                  <svg
-                    viewBox="0 0 100 120"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-full h-full"
-                  >
-                    {/* Outer Green Shield */}
-                    <path
-                      d="M50 0L95 20V65C95 95 50 118 50 118C50 118 5 95 5 65V20L50 0Z"
-                      fill="#006633"
-                    />
-
-                    {/* Inner Digital Matrix Band */}
-                    <path
-                      d="M50 8L88 25V63C88 88 50 108 50 108C50 108 12 88 12 63V25L50 8Z"
-                      fill="#004D26"
-                    />
-
-                    {/* Binary Pattern */}
-                    <text
-                      x="50"
-                      y="54"
-                      textAnchor="middle"
-                      fill="#00D084"
-                      fontSize="5"
-                      fontFamily="monospace"
-                      letterSpacing="1"
-                    >
-                      10101010101
-                    </text>
-                    <text
-                      x="50"
-                      y="62"
-                      textAnchor="middle"
-                      fill="#00D084"
-                      fontSize="5"
-                      fontFamily="monospace"
-                      letterSpacing="1"
-                    >
-                      01010101010
-                    </text>
-                    <text
-                      x="50"
-                      y="70"
-                      textAnchor="middle"
-                      fill="#00D084"
-                      fontSize="5"
-                      fontFamily="monospace"
-                      letterSpacing="1"
-                    >
-                      10101010101
-                    </text>
-
-                    {/* White Circular Seal with Nigerian Coat of Arms */}
-                    <circle cx="50" cy="36" r="18" fill="#FFFFFF" stroke="#006633" strokeWidth="1.5" />
-
-                    {/* Nigerian Coat of Arms */}
-                    <path
-                      d="M45 32H55V40C55 43 50 45 50 45C50 45 45 43 45 40V32Z"
-                      fill="#1E293B"
-                    />
-                    <path
-                      d="M48 33L50 36L52 33M50 36V43"
-                      stroke="#FFFFFF"
-                      strokeWidth="1.2"
-                      strokeLinecap="round"
-                    />
-
-                    {/* Red Eagle */}
-                    <path
-                      d="M47 30C47 28 53 28 53 30L50 31L47 30Z"
-                      fill="#DC2626"
-                    />
-
-                    {/* Flanking White Horses */}
-                    <path
-                      d="M41 33C42 31 44 32 44 37C44 40 43 42 41 42"
-                      stroke="#475569"
-                      strokeWidth="1"
-                      fill="#FFFFFF"
-                    />
-                    <path
-                      d="M59 33C58 31 56 32 56 37C56 40 57 42 59 42"
-                      stroke="#475569"
-                      strokeWidth="1"
-                      fill="#FFFFFF"
-                    />
-
-                    {/* Silver Inner Keyhole Shield Base */}
-                    <path
-                      d="M50 72C60 72 66 78 66 86C66 98 50 106 50 106C50 106 34 98 34 86C34 78 40 72 50 72Z"
-                      fill="#FFFFFF"
-                    />
-                    {/* Keyhole */}
-                    <circle cx="50" cy="85" r="3.5" fill="#006633" />
-                    <path d="M48.5 85L47.5 94H52.5L51.5 85H48.5Z" fill="#006633" />
-                  </svg>
+                {/* Actual Official NDPC Shield Badge */}
+                <div className="relative z-10 w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center filter drop-shadow-[0_8px_20px_rgba(0,102,51,0.22)]">
+                  <Image
+                    src="/ndpc-badge.png"
+                    alt="Official Nigeria Data Protection Commission (NDPC) Certified"
+                    width={128}
+                    height={128}
+                    className="w-full h-full object-contain"
+                    priority
+                  />
                 </div>
               </div>
             </div>

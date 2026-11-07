@@ -290,7 +290,8 @@ function OnboardContent() {
       </div>
 
       {/* Compliance Footer */}
-      <div className="max-w-md mx-auto w-full text-center mt-6">
+      <div className="max-w-md mx-auto w-full flex items-center justify-center gap-2 mt-6">
+        <Image src="/ndpc-badge.png" alt="NDPC" width={16} height={16} className="w-4 h-4 object-contain" />
         <p className="text-[11px] text-[#525B6C]">
           NDPC Certified • NDPA Compliant • Bank-Grade 256-bit TLS
         </p>
