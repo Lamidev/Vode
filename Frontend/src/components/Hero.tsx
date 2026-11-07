@@ -166,34 +166,11 @@ export default function Hero() {
   ];
 
   return (
-    <section id="top" className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden">
-      {/* Ambient Hero Gradient Canopy & Precision Pattern */}
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[650px] pointer-events-none z-0 overflow-hidden"
-        style={{
-          WebkitMaskImage: "radial-gradient(ellipse 80% 70% at 50% 25%, black 45%, transparent 95%)",
-          maskImage: "radial-gradient(ellipse 80% 70% at 50% 25%, black 45%, transparent 95%)",
-        }}
-      >
-        {/* Soft Multi-stop Radial Glow (Vode Mint + Electric Cobalt) */}
-        <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-[720px] sm:w-[920px] h-[400px] bg-gradient-to-b from-[#00D084]/25 via-[#00D084]/10 to-transparent blur-3xl" />
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[520px] h-[300px] bg-gradient-to-tr from-[#1E40AF]/14 via-[#00D084]/12 to-transparent blur-2xl" />
-
-        {/* Crisp Vector Grid Pattern with Mint Dots */}
-        <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="hero-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(9, 13, 22, 0.08)" strokeWidth="1" />
-              <circle cx="40" cy="40" r="1.5" fill="rgba(0, 208, 132, 0.35)" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#hero-grid)" />
-        </svg>
-
-        {/* Concentric Financial Vault Rings */}
-        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[480px] h-[480px] rounded-full border border-[#00D084]/25" />
-        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[760px] h-[760px] rounded-full border border-dashed border-[#090D16]/12" />
-      </div>
+    <section id="top" className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden bg-vode-grid rounded-3xl">
+      {/* Ambient Top Glow & Concentric Vault Rings (Exact Match to Emergency Protection) */}
+      <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-[#00D084]/22 via-[#1E40AF]/10 to-transparent blur-3xl pointer-events-none" />
+      <div className="absolute top-[260px] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] rounded-full border border-[#00D084]/25 pointer-events-none" />
+      <div className="absolute top-[260px] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] h-[760px] rounded-full border border-dashed border-[#090D16]/12 pointer-events-none" />
 
       {/* Clean Unboxed Hero Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto space-y-6">

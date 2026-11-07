@@ -8,29 +8,12 @@ import { ArrowRight, Mail } from "lucide-react";
 export default function Footer() {
   return (
     <footer className="border-t border-slate-200/80 bg-white">
-      {/* Pre-Footer Action Banner with Geometric Mint Canopy */}
-      <div className="relative overflow-hidden py-18 sm:py-28 px-4 sm:px-6 max-w-6xl mx-auto text-center border-b border-slate-200/80">
-        {/* Ambient Glow & Micro-Grid Mirroring the Hero */}
-        <div
-          className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
-          style={{
-            WebkitMaskImage: "radial-gradient(ellipse 80% 70% at 50% 50%, black 45%, transparent 95%)",
-            maskImage: "radial-gradient(ellipse 80% 70% at 50% 50%, black 45%, transparent 95%)",
-          }}
-        >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[300px] bg-gradient-to-b from-[#00D084]/22 via-[#00D084]/8 to-transparent blur-3xl" />
-          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="footer-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(9, 13, 22, 0.08)" strokeWidth="1" />
-                <circle cx="40" cy="40" r="1.5" fill="rgba(0, 208, 132, 0.35)" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#footer-grid)" />
-          </svg>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[460px] h-[460px] rounded-full border border-[#00D084]/25" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[720px] rounded-full border border-dashed border-[#090D16]/12" />
-        </div>
+      {/* Pre-Footer Action Banner (Matching Emergency Protection) */}
+      <div className="relative overflow-hidden py-18 sm:py-28 px-4 sm:px-6 max-w-6xl mx-auto text-center border-b border-slate-200/80 bg-vode-grid">
+        {/* Ambient Top Glow & Concentric Vault Rings */}
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-[#00D084]/22 via-[#1E40AF]/10 to-transparent blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] rounded-full border border-[#00D084]/25 pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] h-[760px] rounded-full border border-dashed border-[#090D16]/12 pointer-events-none" />
 
         <div className="relative z-10">
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold tracking-tight text-[#090D16] max-w-2xl mx-auto leading-tight">
