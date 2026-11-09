@@ -69,6 +69,7 @@ model User {
   dedicatedNubans   DedicatedNuban[]
   transactions      Transaction[]
   ephemeralTokens   EphemeralToken[]
+  beneficiaries     Beneficiary[]
 
   @@index([phoneNumber])
   @@index([whatsappId])
@@ -165,4 +166,24 @@ model EphemeralToken {
   @@index([phoneNumber])
   @@index([expiresAt])
 }
+
+model Beneficiary {
+  id                String             @id @default(cuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nickname          String             // e.g. "Chioma", "Mummy", "Alhaji Musa", "Landlord"
+  accountName       String             // Legal verified bank name
+  accountNumber     String             // 10-digit NUBAN
+  bankCode          String             // CBN / NIP bank code
+  bankName          String             // e.g. "Guaranty Trust Bank", "Access Bank"
+  transferCount     Int                @default(1)
+  lastTransferredAt DateTime           @default(now())
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@unique([userId, accountNumber, bankCode])
+  @@index([userId])
+  @@index([nickname])
+}
+
 

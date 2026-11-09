@@ -98,4 +98,51 @@ export class WhatsAppService {
       return false;
     }
   }
+
+  /**
+   * Download media (audio voice notes, images, documents) from Meta WhatsApp Cloud API
+   */
+  static async downloadMedia(mediaId: string): Promise<{ buffer: Buffer; mimeType: string } | null> {
+    try {
+      if (env.WHATSAPP_PHONE_NUMBER_ID === "demo_phone_id" || !env.WHATSAPP_ACCESS_TOKEN) {
+        logger.info({ mediaId }, "[WhatsApp Demo] Simulating media download");
+        return { buffer: Buffer.from("simulated_media_data"), mimeType: "audio/ogg" };
+      }
+
+      // 1. Fetch media metadata and signed download URL
+      const metaUrl = `${this.baseUrl}/${mediaId}`;
+      const metaRes = await axios.get(metaUrl, {
+        headers: {
+          Authorization: `Bearer ${env.WHATSAPP_ACCESS_TOKEN}`,
+        },
+      });
+
+      const downloadUrl = metaRes.data?.url;
+      const mimeType = metaRes.data?.mime_type || "application/octet-stream";
+
+      if (!downloadUrl) {
+        throw new Error("No download URL returned from Meta Graph API");
+      }
+
+      // 2. Download binary stream using User-Agent and Bearer Token as required by Meta
+      const mediaRes = await axios.get(downloadUrl, {
+        responseType: "arraybuffer",
+        headers: {
+          Authorization: `Bearer ${env.WHATSAPP_ACCESS_TOKEN}`,
+          "User-Agent": "Vode-Backend/1.0",
+        },
+      });
+
+      const buffer = Buffer.from(mediaRes.data);
+      logger.info({ mediaId, mimeType, byteLength: buffer.length }, "Downloaded WhatsApp media");
+
+      return { buffer, mimeType };
+    } catch (error: any) {
+      logger.error(
+        { error: error.response?.data || error.message, mediaId },
+        "Failed to download media from Meta"
+      );
+      return null;
+    }
+  }
 }

@@ -14,7 +14,7 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: [env.FRONTEND_URL, "https://usevode.com", "http://localhost:3050"],
+    origin: [env.FRONTEND_URL, "https://usevode.com", "https://www.usevode.com", "http://localhost:3050"],
     credentials: true,
   })
 );
