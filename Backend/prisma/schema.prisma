@@ -31,6 +31,8 @@ enum TransactionType {
   DATA_BUNDLE
   ACCOUNT_FUNDING
   FEE
+  REVERSAL
+  ADJUSTMENT
 }
 
 enum TransactionStatus {
@@ -58,18 +60,22 @@ model User {
   whatsappId        String             @unique // Meta WABA sender ID
   fullName          String?
   bvn               String?            // Encrypted Tier-1 BVN
+  bvnLast4          String?            // Last 4 digits for zero-SMS emergency freeze check
   nin               String?            // Encrypted Tier-1 NIN
   pinHash           String?            // Hashed 4-digit transaction PIN (bcrypt/argon2)
+  pinFailedAttempts Int                @default(0)
+  pinLockedUntil    DateTime?
   status            UserStatus         @default(ONBOARDING_NAME)
   kycTier           KycTier            @default(TIER_0)
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 
-  wallet            Wallet?
-  dedicatedNubans   DedicatedNuban[]
-  transactions      Transaction[]
-  ephemeralTokens   EphemeralToken[]
-  beneficiaries     Beneficiary[]
+  wallet              Wallet?
+  dedicatedNubans     DedicatedNuban[]
+  transactions        Transaction[]
+  ephemeralTokens     EphemeralToken[]
+  beneficiaries       Beneficiary[]
+  emergencyFreezeLogs EmergencyFreezeLog[]
 
   @@index([phoneNumber])
   @@index([whatsappId])
@@ -184,6 +190,153 @@ model Beneficiary {
   @@unique([userId, accountNumber, bankCode])
   @@index([userId])
   @@index([nickname])
+}
+
+model EmergencyFreezeLog {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reference       String    @unique
+  channel         String    // WEB_KILL_SWITCH, ADMIN_PANEL, WHATSAPP_SOS
+  ipAddress       String?
+  userAgent       String?
+  unfrozenAt      DateTime?
+  unfrozenBy      String?
+  createdAt       DateTime  @default(now())
+
+  @@index([userId])
+}
+
+// ==========================================
+// ADMIN OPERATIONS & MAKER-CHECKER MODELS
+// ==========================================
+
+enum AdminRole {
+  SUPER_ADMIN
+  OPERATIONS
+  FINANCE
+  SUPPORT
+}
+
+enum AdminActionStatus {
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  EXECUTED
+  FAILED
+}
+
+enum AdminActionType {
+  REVERSE_TRANSACTION
+  UNFREEZE_USER
+  MANUAL_ADJUSTMENT
+  SWITCH_BANKING_PROVIDER
+  UPDATE_SYSTEM_LIMITS
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  fullName     String
+  passwordHash String
+  role         AdminRole @default(SUPPORT)
+  totpSecret   String?
+  totpEnabled  Boolean   @default(false)
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  lastLoginIp  String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  auditLogs        AuditLog[]
+  makerRequests    AdminActionRequest[] @relation("MakerRequests")
+  checkerReviews   AdminActionRequest[] @relation("CheckerReviews")
+
+  @@index([email])
+  @@index([role])
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  adminUserId String
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id])
+  action      String
+  targetType  String    // e.g. "USER", "TRANSACTION", "SYSTEM_CONFIG", "ADMIN_ACTION"
+  targetId    String?
+  beforeState Json?
+  afterState  Json?
+  reason      String?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
+
+  @@index([adminUserId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model AdminActionRequest {
+  id           String            @id @default(cuid())
+  type         AdminActionType
+  status       AdminActionStatus @default(PENDING_APPROVAL)
+  targetType   String
+  targetId     String
+  payload      Json
+  reason       String
+  evidenceUrl  String?
+  makerId      String
+  maker        AdminUser         @relation("MakerRequests", fields: [makerId], references: [id])
+  checkerId    String?
+  checker      AdminUser?        @relation("CheckerReviews", fields: [checkerId], references: [id])
+  checkerNotes String?
+  reviewedAt   DateTime?
+  executedAt   DateTime?
+  errorMessage String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([status])
+  @@index([makerId])
+  @@index([targetId])
+}
+
+model SystemConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+}
+
+model ReconciliationBatch {
+  id               String                      @id @default(cuid())
+  providerName     String
+  fileName         String
+  totalRows        Int
+  matchedCount     Int
+  discrepancyCount Int
+  uploadedBy       String
+  createdAt        DateTime                    @default(now())
+  discrepancies    ReconciliationDiscrepancy[]
+}
+
+model ReconciliationDiscrepancy {
+  id              String              @id @default(cuid())
+  batchId         String
+  batch           ReconciliationBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  type            String              // INTERNAL_ONLY, PARTNER_ONLY, AMOUNT_MISMATCH, STATUS_MISMATCH
+  reference       String
+  partnerRef      String?
+  internalAmount  BigInt?
+  partnerAmount   BigInt?
+  internalStatus  String?
+  partnerStatus   String?
+  isResolved      Boolean             @default(false)
+  resolutionNotes String?
+  createdAt       DateTime            @default(now())
+
+  @@index([batchId])
+  @@index([reference])
 }
 
 

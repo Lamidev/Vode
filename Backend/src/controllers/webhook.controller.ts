@@ -152,6 +152,105 @@ export class WebhookController {
   }
 
   /**
+   * Zero-SMS Emergency Account Freeze Kill-Switch (POST /webhook/freeze)
+   */
+  static async emergencyFreeze(req: Request, res: Response): Promise<void> {
+    try {
+      const { phoneNumber, secretType, secretValue } = req.body;
+
+      if (!phoneNumber || !secretType || !secretValue) {
+        res.status(400).json({ error: "Phone number and verification secret are required." });
+        return;
+      }
+
+      // Normalize Nigerian phone numbers (+234..., 234..., 080...)
+      let digits = String(phoneNumber).replace(/\D/g, "");
+      if (digits.startsWith("0") && digits.length === 11) {
+        digits = `234${digits.slice(1)}`;
+      }
+      const normalizedPhone = `+${digits}`;
+
+      const user = await prisma.user.findUnique({
+        where: { phoneNumber: normalizedPhone },
+        include: { wallet: true },
+      });
+
+      if (!user) {
+        // Generic error to avoid phone number enumeration
+        res.status(400).json({ error: "Verification failed. Please check your phone number and secret." });
+        return;
+      }
+
+      const cleanSecret = String(secretValue).replace(/\D/g, "");
+      let isAuthorized = false;
+
+      if (secretType === "pin" && user.pinHash && /^\d{4}$/.test(cleanSecret)) {
+        isAuthorized = await bcrypt.compare(cleanSecret, user.pinHash);
+      } else if (secretType === "bvn" && user.bvnLast4 && /^\d{4}$/.test(cleanSecret)) {
+        isAuthorized = user.bvnLast4 === cleanSecret;
+      }
+
+      if (!isAuthorized) {
+        logger.warn({ phoneNumber: normalizedPhone, ip: req.ip }, "🚫 Failed emergency freeze verification attempt");
+        res.status(400).json({ error: "Verification failed. Please check your phone number and secret." });
+        return;
+      }
+
+      const freezeRef = `VODE-LCK-${Math.floor(100000 + Math.random() * 900000)}`;
+
+      await prisma.$transaction(async (tx) => {
+        await tx.user.update({
+          where: { id: user.id },
+          data: { status: "FROZEN" },
+        });
+
+        if (user.wallet) {
+          await tx.wallet.update({
+            where: { id: user.wallet.id },
+            data: { isLocked: true },
+          });
+        }
+
+        await tx.ephemeralToken.updateMany({
+          where: { userId: user.id, isUsed: false },
+          data: { isUsed: true },
+        });
+
+        await tx.emergencyFreezeLog.create({
+          data: {
+            userId: user.id,
+            reference: freezeRef,
+            channel: "WEB_KILL_SWITCH",
+            ipAddress: req.ip || null,
+            userAgent: req.headers["user-agent"] || null,
+          },
+        });
+      });
+
+      logger.warn({ userId: user.id, freezeRef, ip: req.ip }, "🚨 Emergency account freeze executed");
+
+      // Best-effort WhatsApp notification
+      const cleanPhone = normalizedPhone.replace("+", "");
+      await WhatsAppService.sendTextMessage(
+        cleanPhone,
+        `🚨 *EMERGENCY LOCK ACTIVATED*\n\n` +
+        `Your Vode account has been frozen immediately via our web kill-switch.\n` +
+        `• *Lock Ref:* \`${freezeRef}\`\n\n` +
+        `All outward transfers and payments are blocked. Inbound deposits remain safe. Contact support@usevode.com to verify your identity and unlock.`
+      ).catch(() => {});
+
+      res.status(200).json({
+        success: true,
+        freezeRef,
+        message: "Account frozen immediately.",
+      });
+    } catch (err: any) {
+      logger.error({ error: err.message }, "Error during emergency freeze");
+      res.status(500).json({ error: "Internal server error processing emergency freeze." });
+    }
+  }
+
+  /**
    * Complete Secure Onboarding via In-App Webview Sheet (POST /webhook/complete-onboarding)
    */
   static async completeOnboarding(req: Request, res: Response): Promise<void> {
@@ -160,6 +259,17 @@ export class WebhookController {
 
       if (!token || !fullName || !bvn || !pin) {
         res.status(400).json({ error: "Missing required onboarding fields" });
+        return;
+      }
+
+      const cleanBvn = String(bvn).replace(/\D/g, "");
+      if (!/^\d{11}$/.test(cleanBvn)) {
+        res.status(400).json({ error: "BVN or NIN must be exactly 11 digits." });
+        return;
+      }
+
+      if (!/^\d{4}$/.test(String(pin))) {
+        res.status(400).json({ error: "Transaction PIN must be exactly 4 digits." });
         return;
       }
 
@@ -177,6 +287,8 @@ export class WebhookController {
 
       const phoneNumber = tokenRecord.phoneNumber;
       const pinHash = await bcrypt.hash(pin, 10);
+      const bvnHash = await bcrypt.hash(cleanBvn, 10);
+      const bvnLast4 = cleanBvn.slice(-4);
       const [firstName, ...rest] = fullName.trim().split(" ");
       const lastName = rest.join(" ") || firstName;
       const accountRef = `vode_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
@@ -189,7 +301,7 @@ export class WebhookController {
         phoneNumber,
         firstName,
         lastName,
-        bvn,
+        bvn: cleanBvn,
       });
 
       if (!virtualAcct) {
@@ -204,7 +316,11 @@ export class WebhookController {
         where: { phoneNumber },
         update: {
           fullName: fullName.trim(),
+          bvn: bvnHash,
+          bvnLast4,
           pinHash,
+          pinFailedAttempts: 0,
+          pinLockedUntil: null,
           status: "ACTIVE",
           kycTier: "TIER_1",
         },
@@ -212,6 +328,8 @@ export class WebhookController {
           phoneNumber,
           whatsappId: phoneNumber.replace("+", ""),
           fullName: fullName.trim(),
+          bvn: bvnHash,
+          bvnLast4,
           pinHash,
           status: "ACTIVE",
           kycTier: "TIER_1",

@@ -12,20 +12,46 @@ export default function FreezePage() {
   const [secretType, setSecretType] = useState<"pin" | "bvn">("pin");
   const [secretValue, setSecretValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [isFrozen, setIsFrozen] = useState(false);
   const [freezeRef, setFreezeRef] = useState("");
 
-  const handleFreeze = (e: React.FormEvent) => {
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_URL ||
+    (typeof window !== "undefined" && window.location.hostname === "localhost"
+      ? "http://localhost:4000"
+      : "https://api.usevode.com");
+
+  const handleFreeze = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
     if (!phoneNumber || !secretValue) return;
 
     setIsSubmitting(true);
-    // Simulate instant backend kill-switch
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const response = await fetch(`${API_BASE}/webhook/freeze`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phoneNumber: phoneNumber.trim(),
+          secretType,
+          secretValue: secretValue.trim(),
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to freeze account. Please check your details.");
+      }
+
+      setFreezeRef(data.freezeRef || "VODE-LCK-CONFIRMED");
       setIsFrozen(true);
-      setFreezeRef(`VODE-LCK-${Math.floor(100000 + Math.random() * 900000)}`);
-    }, 1200);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to freeze account. Please try again.";
+      setErrorMessage(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -135,6 +161,12 @@ export default function FreezePage() {
                   Freezing immediately logs out all WhatsApp sessions and rejects all outbound bank transfers.
                 </span>
               </div>
+
+              {errorMessage && (
+                <div className="p-3 bg-[#AF0908]/10 border border-[#AF0908]/25 rounded-md text-xs text-[#AF0908]">
+                  {errorMessage}
+                </div>
+              )}
 
               <Button
                 type="submit"

@@ -7,6 +7,7 @@ import { WhatsAppService } from "./whatsapp.service";
 import { InboundCreditEvent } from "./banking/banking.interface";
 import { env } from "../config/env";
 import { BeneficiaryService } from "./beneficiary.service";
+import { SystemConfigService } from "./system-config.service";
 
 export interface PrepareTransferParams {
   userId: string;
@@ -19,6 +20,50 @@ export interface PrepareTransferParams {
 
 export class LedgerService {
   private static NOMINAL_TRANSFER_FEE_KOBO = 1000n; // ₦10.00 flat NIP clearing fee
+
+  private static TIER_LIMITS_KOBO: Record<string, { singleKobo: bigint; dailyKobo: bigint }> = {
+    TIER_0: { singleKobo: 0n, dailyKobo: 0n },
+    TIER_1: { singleKobo: 50_000_00n, dailyKobo: 50_000_00n },       // ₦50,000 single & daily
+    TIER_2: { singleKobo: 200_000_00n, dailyKobo: 500_000_00n },     // ₦200,000 single / ₦500,000 daily
+    TIER_3: { singleKobo: 1_000_000_00n, dailyKobo: 5_000_000_00n }, // ₦1,000,000 single / ₦5,000,000 daily
+  };
+
+  /**
+   * Enforce CBN KYC Tier single-transaction and 24-hour rolling daily transfer limits
+   */
+  private static async checkTierTransferLimits(
+    db: any,
+    userId: string,
+    kycTier: string,
+    amountInKobo: bigint
+  ): Promise<string | null> {
+    const limits = this.TIER_LIMITS_KOBO[kycTier] || this.TIER_LIMITS_KOBO.TIER_1;
+
+    if (amountInKobo > limits.singleKobo) {
+      const singleNaira = (Number(limits.singleKobo) / 100).toLocaleString("en-NG");
+      return `Single transfer limit for your ${kycTier.replace("_", " ")} account is ₦${singleNaira}. Please send a smaller amount or upgrade your KYC tier.`;
+    }
+
+    const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const recentOutward = await db.transaction.aggregate({
+      where: {
+        userId,
+        type: "TRANSFER_OUT",
+        status: { in: ["SUCCESS", "PROCESSING"] },
+        createdAt: { gte: since24h },
+      },
+      _sum: { amountInKobo: true },
+    });
+
+    const spent24h = recentOutward._sum?.amountInKobo || 0n;
+    if (spent24h + amountInKobo > limits.dailyKobo) {
+      const dailyNaira = (Number(limits.dailyKobo) / 100).toLocaleString("en-NG");
+      const remainingNaira = Math.max(0, Number(limits.dailyKobo - spent24h) / 100).toLocaleString("en-NG");
+      return `24-hour transfer limit reached (₦${dailyNaira} max for ${kycTier.replace("_", " ")}). Remaining daily allowance: ₦${remainingNaira}.`;
+    }
+
+    return null;
+  }
 
   /**
    * Process an Inbound Deposit (Universal Core Webhook Handler)
@@ -67,7 +112,9 @@ export class LedgerService {
 
       // 3. Atomic Database Transaction: Credit Wallet + Ledger Entry + Transaction
       const result = await prisma.$transaction(async (tx) => {
-        // Fetch current wallet with row lock logic
+        // Pessimistic row-level lock on wallet to serialize concurrent credits/debits
+        await tx.$queryRaw`SELECT id FROM "Wallet" WHERE id = ${wallet.id} FOR UPDATE`;
+
         const currentWallet = await tx.wallet.findUniqueOrThrow({
           where: { id: wallet.id },
         });
@@ -156,6 +203,14 @@ export class LedgerService {
     const { userId, amountInNaira, recipientAccountNumber, recipientBankCode, recipientBankName, narration } = params;
 
     try {
+      const flags = await SystemConfigService.getFlags();
+      if (!flags.outwardTransfersEnabled) {
+        return {
+          success: false,
+          errorMessage: "Outward transfers are temporarily paused for scheduled maintenance. Your funds are safe.",
+        };
+      }
+
       const user = await prisma.user.findUnique({
         where: { id: userId },
         include: { wallet: true },
@@ -171,6 +226,12 @@ export class LedgerService {
 
       const amountInKobo = BigInt(Math.round(amountInNaira * 100));
       const totalDebitInKobo = amountInKobo + this.NOMINAL_TRANSFER_FEE_KOBO;
+
+      // Enforce CBN KYC Tier Single & Daily Transfer Limits
+      const limitError = await this.checkTierTransferLimits(prisma, user.id, user.kycTier, amountInKobo);
+      if (limitError) {
+        return { success: false, errorMessage: limitError };
+      }
 
       if (user.wallet.balanceInKobo < totalDebitInKobo) {
         const currentBalanceNaira = Number(user.wallet.balanceInKobo) / 100;
@@ -248,6 +309,14 @@ export class LedgerService {
     const { token, pin } = params;
 
     try {
+      const flags = await SystemConfigService.getFlags();
+      if (!flags.outwardTransfersEnabled) {
+        return {
+          success: false,
+          message: "Outward transfers are temporarily paused by system administrators. Your funds have not been debited.",
+        };
+      }
+
       // 1. Validate Token
       const tokenRecord = await prisma.ephemeralToken.findUnique({
         where: { token },
@@ -269,15 +338,57 @@ export class LedgerService {
       const wallet = user.wallet!;
       const payload: any = tokenRecord.payload;
 
-      // 2. Verify 4-Digit PIN Hash
+      if (user.status !== "ACTIVE" || wallet.isLocked) {
+        return {
+          success: false,
+          message: "Your account is currently frozen or locked. Visit usevode.com/freeze for assistance.",
+        };
+      }
+
+      // 2. Check PIN Brute-Force Lockout
+      if (user.pinLockedUntil && user.pinLockedUntil > new Date()) {
+        const minsLeft = Math.ceil((user.pinLockedUntil.getTime() - Date.now()) / 60000);
+        return {
+          success: false,
+          message: `Too many incorrect PIN attempts. Please wait ${minsLeft} minute(s) before trying again.`,
+        };
+      }
+
+      // 3. Verify 4-Digit PIN Hash
       if (!user.pinHash) {
         return { success: false, message: "No security PIN set. Please re-onboard on WhatsApp." };
       }
 
       const isPinValid = await bcrypt.compare(pin, user.pinHash);
       if (!isPinValid) {
-        logger.warn({ userId: user.id }, "❌ Incorrect PIN entered for payment authorization");
-        return { success: false, message: "Incorrect PIN. Please try again with your secret 4-digit PIN." };
+        const nextAttempts = (user.pinFailedAttempts || 0) + 1;
+        const lockUntil = nextAttempts >= 5 ? new Date(Date.now() + 15 * 60 * 1000) : null;
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            pinFailedAttempts: nextAttempts,
+            ...(lockUntil ? { pinLockedUntil: lockUntil } : {}),
+          },
+        });
+        logger.warn({ userId: user.id, attempts: nextAttempts }, "❌ Incorrect PIN entered for payment authorization");
+        if (lockUntil) {
+          return {
+            success: false,
+            message: "Too many incorrect PIN attempts. Payment authorization is locked for 15 minutes.",
+          };
+        }
+        return {
+          success: false,
+          message: `Incorrect PIN (${5 - nextAttempts} attempt(s) remaining before temporary lock).`,
+        };
+      }
+
+      // Reset failed PIN attempts on valid PIN
+      if (user.pinFailedAttempts > 0 || user.pinLockedUntil) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { pinFailedAttempts: 0, pinLockedUntil: null },
+        });
       }
 
       const amountInKobo = BigInt(payload.amountInKobo);
@@ -285,11 +396,33 @@ export class LedgerService {
       const totalDebitInKobo = amountInKobo + feeInKobo;
       const reference = `VD_TX_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
 
-      // 3. Atomic Debit Transaction in Database
+      // 4. Atomic Debit Transaction in Database with Pessimistic Row Lock
       const debitResult = await prisma.$transaction(async (tx) => {
+        // Claim single-use token atomically inside transaction
+        const claimed = await tx.ephemeralToken.updateMany({
+          where: { token, isUsed: false },
+          data: { isUsed: true },
+        });
+        if (claimed.count === 0) {
+          throw new Error("Payment session has already been used.");
+        }
+
+        // Lock wallet row to prevent concurrent double-spend
+        await tx.$queryRaw`SELECT id FROM "Wallet" WHERE id = ${wallet.id} FOR UPDATE`;
+
         const currentWallet = await tx.wallet.findUniqueOrThrow({
           where: { id: wallet.id },
         });
+
+        if (currentWallet.isLocked) {
+          throw new Error("Wallet is currently locked.");
+        }
+
+        // Re-check tier limits under lock
+        const limitErr = await this.checkTierTransferLimits(tx, user.id, user.kycTier, amountInKobo);
+        if (limitErr) {
+          throw new Error(limitErr);
+        }
 
         if (currentWallet.balanceInKobo < totalDebitInKobo) {
           throw new Error("Insufficient funds at execution time.");
@@ -344,16 +477,10 @@ export class LedgerService {
           },
         });
 
-        // Mark ephemeral token used
-        await tx.ephemeralToken.update({
-          where: { token },
-          data: { isUsed: true },
-        });
-
         return { newBalanceInKobo, transaction };
       });
 
-      // 4. Execute Interbank Transfer on Active Core Banking Provider
+      // 5. Execute Interbank Transfer on Active Core Banking Provider
       const transferResponse = await BankingService.sendTransfer({
         transactionReference: reference,
         amountInNaira: Number(payload.amountInNaira),
@@ -364,8 +491,36 @@ export class LedgerService {
         narration: payload.narration,
       });
 
-      // 5. Update Transaction status based on provider response
-      if (transferResponse.success) {
+      const balanceNaira = Number(debitResult.newBalanceInKobo) / 100;
+      const cleanPhone = user.phoneNumber.replace("+", "");
+
+      // 6. Handle Provider Status (SUCCESS vs PENDING vs FAILED)
+      if (transferResponse.status === "PENDING") {
+        await prisma.transaction.update({
+          where: { reference },
+          data: {
+            status: "PROCESSING",
+            partnerReference: transferResponse.partnerReference,
+          },
+        });
+
+        await WhatsAppService.sendTextMessage(
+          cleanPhone,
+          `⏳ *Transfer Processing*\n\n` +
+          `Your transfer of *₦${Number(payload.amountInNaira).toLocaleString("en-NG", { minimumFractionDigits: 2 })}* to *${payload.recipientName}* is awaiting confirmation from the banking network.\n` +
+          `• *Ref:* \`${reference}\`\n\n` +
+          `_Do not re-send. We will notify you as soon as the bank confirms settlement._`
+        );
+
+        return {
+          success: true,
+          reference,
+          balanceNaira,
+          message: "Transfer submitted and awaiting banking network confirmation.",
+        };
+      }
+
+      if (transferResponse.success && transferResponse.status === "SUCCESS") {
         await prisma.transaction.update({
           where: { reference },
           data: {
@@ -374,12 +529,16 @@ export class LedgerService {
           },
         });
       } else {
-        // If provider fails immediately, atomically refund the user
+        // Only reverse when provider confirms FAILED (never on ambiguous PENDING)
         logger.error({ reference, error: transferResponse.errorMessage }, "Settlement rail failed, reversing debit");
         await prisma.$transaction(async (tx) => {
+          await tx.$queryRaw`SELECT id FROM "Wallet" WHERE id = ${wallet.id} FOR UPDATE`;
+          const lockedWallet = await tx.wallet.findUniqueOrThrow({ where: { id: wallet.id } });
+          const refundedBalance = lockedWallet.balanceInKobo + totalDebitInKobo;
+
           await tx.wallet.update({
             where: { id: wallet.id },
-            data: { balanceInKobo: { increment: totalDebitInKobo } },
+            data: { balanceInKobo: refundedBalance },
           });
           await tx.transaction.update({
             where: { reference },
@@ -391,7 +550,7 @@ export class LedgerService {
               transactionId: debitResult.transaction.id,
               type: "CREDIT",
               amountInKobo: totalDebitInKobo,
-              balanceAfterInKobo: debitResult.newBalanceInKobo + totalDebitInKobo,
+              balanceAfterInKobo: refundedBalance,
               description: `Reversal for failed transfer ${reference}`,
             },
           });
@@ -418,10 +577,7 @@ export class LedgerService {
         logger.warn({ error: saveErr.message }, "Non-blocking beneficiary save error");
       }
 
-      const balanceNaira = Number(debitResult.newBalanceInKobo) / 100;
-
-      // 6. Send Instant Transaction Receipt via WhatsApp
-      const cleanPhone = user.phoneNumber.replace("+", "");
+      // 7. Send Instant Transaction Receipt via WhatsApp
       await WhatsAppService.sendTextMessage(
         cleanPhone,
         `✅ *Transfer Successful!*\n\n` +

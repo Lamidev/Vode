@@ -33,10 +33,12 @@ const envSchema = z.object({
   WHATSAPP_BUSINESS_ACCOUNT_ID: z.string().default("872667862189581"),
   WHATSAPP_ACCESS_TOKEN: z.string().min(1, "WHATSAPP_ACCESS_TOKEN is required"),
   WHATSAPP_WEBHOOK_VERIFY_TOKEN: z.string().default("kredibly_secret_123"),
+  WHATSAPP_APP_SECRET: z.string().optional(),
   WHATSAPP_PHONE_NUMBER: z.string().default("+2347071238658"),
 
   // Core Banking Infrastructure
   CORE_BANKING_PROVIDER: z.string().default("nomba"),
+  BANKING_WEBHOOK_SECRET: z.string().optional(),
 
   // Nomba Payment Provider
   NOMBA_ENV: z.string().default("production"),
