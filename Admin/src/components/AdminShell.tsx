@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useAdminAuth } from "@/context/admin-auth-context";
 import { AdminSidebar } from "@/components/AdminSidebar";
 import { AdminTopbar } from "@/components/AdminTopbar";
@@ -15,6 +15,7 @@ interface AdminShellProps {
 
 export function AdminShell({ title, subtitle, onRefresh, children }: AdminShellProps) {
   const { admin, loading } = useAdminAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (loading) {
     return (
@@ -33,13 +34,19 @@ export function AdminShell({ title, subtitle, onRefresh, children }: AdminShellP
 
   return (
     <div className="min-h-screen flex bg-[#FAF9F5]">
-      <AdminSidebar />
+      <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col min-w-0">
         <EmergencyKillSwitchBanner />
-        <AdminTopbar title={title} subtitle={subtitle} onRefresh={onRefresh} />
-        <main className="flex-1 p-6 max-w-[1440px] w-full mx-auto space-y-6">{children}</main>
+        <AdminTopbar
+          title={title}
+          subtitle={subtitle}
+          onRefresh={onRefresh}
+          onMenuClick={() => setSidebarOpen(true)}
+        />
+        <main className="flex-1 p-4 sm:p-6 max-w-[1440px] w-full mx-auto space-y-5 sm:space-y-6">
+          {children}
+        </main>
       </div>
     </div>
   );
 }
-
