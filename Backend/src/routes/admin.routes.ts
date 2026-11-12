@@ -114,4 +114,9 @@ router.patch(
   AdminController.updateAdminUser
 );
 
+// Support Tickets & Customer Queries
+router.get("/tickets", requireAdminAuth, AdminController.listTickets);
+router.post("/tickets/:id/reply", requireAdminAuth, AdminController.replyToTicket);
+router.patch("/tickets/:id/status", requireAdminAuth, AdminController.updateTicketStatus);
+
 export { router as adminRouter };

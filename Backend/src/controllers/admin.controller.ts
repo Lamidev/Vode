@@ -16,6 +16,7 @@ import { BankingService } from "../services/banking/banking.service";
 import { AIService } from "../services/ai/ai.service";
 import { AdminApprovalService } from "../services/admin-approval.service";
 import { WhatsAppService } from "../services/whatsapp.service";
+import { SupportTicketService } from "../services/support-ticket.service";
 
 function serialize(data: any): any {
   return JSON.parse(
@@ -1053,6 +1054,105 @@ export class AdminController {
       res.status(200).json({ member: updated });
     } catch (err: any) {
       res.status(400).json({ error: "Failed to update admin user." });
+    }
+  }
+
+  // ==========================================
+  // 9. SUPPORT TICKETS & CUSTOMER QUERIES
+  // ==========================================
+
+  static async listTickets(req: AdminRequest, res: Response): Promise<void> {
+    try {
+      const status = req.query.status ? String(req.query.status) : undefined;
+      const q = String(req.query.q || "").trim();
+      const where: any = {};
+
+      if (status) where.status = status;
+      if (q) {
+        where.OR = [
+          { ticketNumber: { contains: q, mode: "insensitive" } },
+          { phoneNumber: { contains: q } },
+          { customerName: { contains: q, mode: "insensitive" } },
+          { subject: { contains: q, mode: "insensitive" } },
+        ];
+      }
+
+      const tickets = await prisma.supportTicket.findMany({
+        where,
+        orderBy: { updatedAt: "desc" },
+        take: 50,
+        include: {
+          assignedAdmin: { select: { fullName: true, email: true } },
+          messages: { orderBy: { createdAt: "asc" } },
+        },
+      });
+
+      res.status(200).json(serialize({ tickets }));
+    } catch (err: any) {
+      res.status(500).json({ error: "Failed to list support tickets." });
+    }
+  }
+
+  static async replyToTicket(req: AdminRequest, res: Response): Promise<void> {
+    try {
+      const ticketId = String(req.params.id);
+      const { message } = req.body;
+      if (!message || !String(message).trim()) {
+        res.status(400).json({ error: "Reply message cannot be empty." });
+        return;
+      }
+
+      const result = await SupportTicketService.sendAdminReply(
+        ticketId,
+        req.admin!.id,
+        String(message).trim()
+      );
+
+      if (!result.success) {
+        res.status(400).json({ error: result.error });
+        return;
+      }
+
+      await recordAuditLog({
+        adminUserId: req.admin!.id,
+        action: "REPLY_SUPPORT_TICKET",
+        targetType: "SUPPORT_TICKET",
+        targetId: ticketId,
+        req,
+      });
+
+      res.status(200).json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ error: "Failed to send ticket reply." });
+    }
+  }
+
+  static async updateTicketStatus(req: AdminRequest, res: Response): Promise<void> {
+    try {
+      const ticketId = String(req.params.id);
+      const { status, resolutionNotes } = req.body;
+
+      const updated = await prisma.supportTicket.update({
+        where: { id: ticketId },
+        data: {
+          status,
+          ...(resolutionNotes ? { resolutionNotes } : {}),
+          ...(status === "RESOLVED" || status === "CLOSED" ? { resolvedAt: new Date() } : {}),
+        },
+      });
+
+      await recordAuditLog({
+        adminUserId: req.admin!.id,
+        action: "UPDATE_TICKET_STATUS",
+        targetType: "SUPPORT_TICKET",
+        targetId: ticketId,
+        afterState: { status, resolutionNotes },
+        req,
+      });
+
+      res.status(200).json(serialize({ ticket: updated }));
+    } catch (err: any) {
+      res.status(500).json({ error: "Failed to update ticket status." });
     }
   }
 }

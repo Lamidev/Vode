@@ -76,6 +76,7 @@ model User {
   ephemeralTokens     EphemeralToken[]
   beneficiaries       Beneficiary[]
   emergencyFreezeLogs EmergencyFreezeLog[]
+  supportTickets      SupportTicket[]
 
   @@index([phoneNumber])
   @@index([whatsappId])
@@ -251,6 +252,7 @@ model AdminUser {
   auditLogs        AuditLog[]
   makerRequests    AdminActionRequest[] @relation("MakerRequests")
   checkerReviews   AdminActionRequest[] @relation("CheckerReviews")
+  assignedTickets  SupportTicket[]
 
   @@index([email])
   @@index([role])
@@ -337,6 +339,59 @@ model ReconciliationDiscrepancy {
 
   @@index([batchId])
   @@index([reference])
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model SupportTicket {
+  id              String         @id @default(cuid())
+  ticketNumber    String         @unique
+  userId          String?
+  user            User?          @relation(fields: [userId], references: [id])
+  phoneNumber     String
+  customerName    String?
+  subject         String
+  issueCategory   String         // e.g. "TRANSFER_ISSUE", "ACCOUNT_FREEZE", "AIRTIME_DATA", "GENERAL"
+  status          TicketStatus   @default(OPEN)
+  priority        TicketPriority @default(MEDIUM)
+  lastMessage     String
+  transactionRef  String?
+  assignedAdminId String?
+  assignedAdmin   AdminUser?     @relation(fields: [assignedAdminId], references: [id])
+  resolutionNotes String?
+  resolvedAt      DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  messages SupportTicketMessage[]
+
+  @@index([phoneNumber])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model SupportTicketMessage {
+  id        String        @id @default(cuid())
+  ticketId  String
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  sender    String        // "CUSTOMER" | "ADMIN" | "SYSTEM"
+  senderId  String?       // adminId or null
+  message   String
+  createdAt DateTime      @default(now())
+
+  @@index([ticketId])
 }
 
 

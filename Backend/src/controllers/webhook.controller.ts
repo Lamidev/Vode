@@ -10,6 +10,7 @@ import { LedgerService } from "../services/ledger.service";
 import { BankMatcher } from "../services/banking/bank-matcher";
 import { BeneficiaryService } from "../services/beneficiary.service";
 import { StatementService } from "../services/statement.service";
+import { SupportTicketService } from "../services/support-ticket.service";
 import { AIService } from "../services/ai/ai.service";
 
 function parseAmount(raw: string): number {
@@ -515,7 +516,54 @@ export class WebhookController {
           return;
         }
 
-        // C. Transaction History Command
+        // C. Customer Support / Help Query (e.g. "help", "support", "talk to human", "complaint")
+        const isSupportQuery =
+          lowerText.startsWith("help") ||
+          lowerText.startsWith("support") ||
+          lowerText.includes("complaint") ||
+          lowerText.includes("scam") ||
+          lowerText.includes("fraud") ||
+          lowerText.includes("human") ||
+          lowerText.includes("operator") ||
+          lowerText.includes("issue") ||
+          lowerText.includes("problem");
+
+        if (isSupportQuery) {
+          const category = lowerText.includes("scam") || lowerText.includes("fraud")
+            ? "SECURITY_FRAUD"
+            : lowerText.includes("transfer") || lowerText.includes("debit")
+            ? "TRANSFER_ISSUE"
+            : "GENERAL";
+
+          const subject = textBody.length > 50 ? `${textBody.slice(0, 47)}...` : textBody;
+
+          const { ticketNumber, isNew } = await SupportTicketService.handleInboundSupportMessage({
+            phoneNumber: senderPhone,
+            whatsappId: senderPhone,
+            customerName: user?.fullName || undefined,
+            subject,
+            issueCategory: category,
+            message: textBody,
+          });
+
+          if (isNew) {
+            await WhatsAppService.sendTextMessage(
+              senderPhone,
+              `🎫 *Support Ticket Created:* \`${ticketNumber}\`\n\n` +
+              `We have received your message and logged an active case with our Operations Desk.\n\n` +
+              `An operator will review and reply directly to you right here on WhatsApp shortly.\n\n` +
+              `_You can send more details or screenshots anytime._`
+            );
+          } else {
+            await WhatsAppService.sendTextMessage(
+              senderPhone,
+              `💬 Note added to your active ticket \`${ticketNumber}\`. Our team is reviewing this now.`
+            );
+          }
+          return;
+        }
+
+        // D. Transaction History Command
         if (lowerText === "history" || lowerText === "transactions" || lowerText === "recent") {
           const historyText = await StatementService.getFormattedHistory(user.id);
           await WhatsAppService.sendTextMessage(senderPhone, historyText);

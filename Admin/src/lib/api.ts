@@ -167,6 +167,35 @@ export interface ReconciliationBatch {
   }[];
 }
 
+export interface SupportTicketMessage {
+  id: string;
+  sender: "CUSTOMER" | "ADMIN" | "SYSTEM";
+  senderId: string | null;
+  message: string;
+  createdAt: string;
+}
+
+export interface SupportTicketRecord {
+  id: string;
+  ticketNumber: string;
+  userId: string | null;
+  phoneNumber: string;
+  customerName: string | null;
+  subject: string;
+  issueCategory: string;
+  status: "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
+  priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+  lastMessage: string;
+  transactionRef: string | null;
+  assignedAdminId: string | null;
+  assignedAdmin?: { fullName: string; email: string } | null;
+  resolutionNotes: string | null;
+  resolvedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  messages?: SupportTicketMessage[];
+}
+
 export interface AuditLogRecord {
   id: string;
   action: string;
@@ -379,6 +408,27 @@ export const adminApi = {
     }),
   updateAdminUser: (id: string, body: { isActive?: boolean; role?: AdminRole }) =>
     apiFetch<{ member: AdminUser }>(`/admin/team/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }),
+
+  // Support Tickets
+  listTickets: (params?: { q?: string; status?: string }) => {
+    const qs = new URLSearchParams();
+    if (params?.q) qs.set("q", params.q);
+    if (params?.status) qs.set("status", params.status);
+    return apiFetch<{ tickets: SupportTicketRecord[] }>(`/admin/tickets?${qs.toString()}`);
+  },
+  replyTicket: (ticketId: string, message: string) =>
+    apiFetch<{ success: boolean }>(`/admin/tickets/${ticketId}/reply`, {
+      method: "POST",
+      body: JSON.stringify({ message }),
+    }),
+  updateTicketStatus: (
+    ticketId: string,
+    body: { status: "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED"; resolutionNotes?: string }
+  ) =>
+    apiFetch<{ ticket: SupportTicketRecord }>(`/admin/tickets/${ticketId}/status`, {
       method: "PATCH",
       body: JSON.stringify(body),
     }),
