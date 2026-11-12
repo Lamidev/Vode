@@ -174,7 +174,7 @@ export default function AdminLoginPage() {
                     }}
                     className={`flex-1 py-1.5 px-3 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
                       mode === "bootstrap"
-                        ? "bg-[#0E63F4] text-white"
+                        ? "bg-[#090D16] text-white"
                         : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                     }`}
                   >
@@ -257,7 +257,7 @@ export default function AdminLoginPage() {
                   />
                 </div>
 
-                <Button type="submit" variant="primary" disabled={submitting} className="w-full">
+                <Button type="submit" disabled={submitting} className="w-full">
                   <UserPlus className="w-4 h-4" />
                   {submitting ? "Creating Super Admin..." : "Create Super Admin"}
                 </Button>
@@ -320,7 +320,6 @@ export default function AdminLoginPage() {
 
                 <Button
                   type="submit"
-                  variant="primary"
                   disabled={submitting || totpCode.length !== 6}
                   className="w-full"
                 >
