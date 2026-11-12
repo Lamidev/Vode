@@ -149,7 +149,7 @@ export default function AdminLoginPage() {
               </div>
             </div>
 
-            {!challengeToken && (
+            {!challengeToken && needsBootstrap && (
               <div className="flex gap-1.5 pt-3">
                 <button
                   type="button"
