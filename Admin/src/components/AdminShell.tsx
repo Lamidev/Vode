@@ -21,7 +21,7 @@ export function AdminShell({ title, subtitle, onRefresh, children }: AdminShellP
     return (
       <div className="min-h-screen bg-[#FAF9F5] flex items-center justify-center">
         <div className="text-center space-y-2">
-          <div className="w-8 h-8 rounded-full border-2 border-[#0E63F4] border-t-transparent animate-spin mx-auto" />
+          <div className="w-8 h-8 rounded-full border-2 border-[#090D16] border-t-transparent animate-spin mx-auto" />
           <p className="text-xs font-medium text-slate-500">Verifying admin session...</p>
         </div>
       </div>

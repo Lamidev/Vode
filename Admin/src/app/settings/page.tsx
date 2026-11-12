@@ -142,6 +142,11 @@ export default function SettingsPage() {
               <div className="mt-1 font-mono font-bold text-xs bg-white p-2 border border-slate-300 select-all">
                 {totpSecret}
               </div>
+              {otpauthUri && (
+                <div className="mt-1 text-[11px] text-slate-500 truncate">
+                  URI: <span className="font-mono text-slate-700 select-all">{otpauthUri}</span>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 items-end">

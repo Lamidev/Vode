@@ -123,7 +123,7 @@ export function ApprovalReviewDrawer({
             {request.evidenceUrl && (
               <div className="mt-2">
                 <span className="text-slate-500">Evidence: </span>
-                <span className="font-mono text-[#0E63F4] break-all">{request.evidenceUrl}</span>
+                <span className="font-mono text-slate-800 underline break-all">{request.evidenceUrl}</span>
               </div>
             )}
           </div>
@@ -185,7 +185,7 @@ export function ApprovalReviewDrawer({
                   value={checkerNotes}
                   onChange={(e) => setCheckerNotes(e.target.value)}
                   placeholder="Optional for approval; mandatory for rejection..."
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#0E63F4]"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#090D16]"
                 />
               </div>
 

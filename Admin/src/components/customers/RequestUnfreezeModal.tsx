@@ -47,7 +47,7 @@ export function RequestUnfreezeModal({
       <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-xl border border-slate-200">
         <div className="flex items-center justify-between">
           <h3 className="font-display font-bold text-base text-[#090D16] flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-[#0E63F4]" />
+            <ShieldCheck className="w-4 h-4 text-slate-800" />
             Request Account Unfreeze (Maker)
           </h3>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 cursor-pointer">
@@ -75,7 +75,7 @@ export function RequestUnfreezeModal({
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="e.g., Completed video KYC + BVN last-4 match with customer"
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#0E63F4]"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#090D16]"
             />
           </div>
 
@@ -88,7 +88,7 @@ export function RequestUnfreezeModal({
               value={evidenceUrl}
               onChange={(e) => setEvidenceUrl(e.target.value)}
               placeholder="https://tickets.usevode.com/..."
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#0E63F4]"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#090D16]"
             />
           </div>
 
@@ -103,7 +103,7 @@ export function RequestUnfreezeModal({
             <button
               type="submit"
               disabled={submitting || !reason.trim()}
-              className="px-4 py-2 rounded-xl bg-[#0E63F4] hover:bg-blue-700 text-white text-xs font-semibold disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-[#090D16] hover:bg-black text-white text-xs font-semibold disabled:opacity-50 cursor-pointer transition-colors"
             >
               {submitting ? "Submitting..." : "Submit for Checker Approval"}
             </button>

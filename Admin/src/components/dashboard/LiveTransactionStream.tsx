@@ -22,7 +22,7 @@ export function LiveTransactionStream({
         </div>
         <Link
           href="/transactions"
-          className="text-xs font-semibold text-[#0E63F4] hover:underline"
+          className="text-xs font-semibold text-[#090D16] hover:underline"
         >
           View all →
         </Link>

@@ -50,14 +50,14 @@ export default function CustomersPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by phone (+234...), full name, or NUBAN account number..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#0E63F4]"
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#090D16]"
           />
         </div>
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[#0E63F4]"
+          className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[#090D16]"
         >
           <option value="">All Statuses</option>
           <option value="ACTIVE">ACTIVE</option>

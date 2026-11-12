@@ -45,7 +45,7 @@ export default function AuditLogsPage() {
             value={actionFilter}
             onChange={(e) => setActionFilter(e.target.value)}
             placeholder="Filter by action (e.g., FREEZE_CUSTOMER, PAUSE_OUTWARD_TRANSFERS, APPROVE)..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#0E63F4]"
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#090D16]"
           />
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function AuditLogsPage() {
                       </div>
                       <div className="text-[11px] text-slate-400">{log.adminUser?.role}</div>
                     </td>
-                    <td className="px-5 py-3.5 font-mono font-semibold text-[#0E63F4]">
+                    <td className="px-5 py-3.5 font-mono font-semibold text-[#090D16]">
                       {log.action}
                     </td>
                     <td className="px-5 py-3.5 font-mono text-slate-600">

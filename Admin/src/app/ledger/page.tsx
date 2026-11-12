@@ -95,7 +95,7 @@ export default function LedgerPage() {
             </div>
             <div className="bg-white rounded-xl p-3 border border-slate-200/70">
               <div className="text-slate-400">Wallet Liabilities</div>
-              <div className="font-bold text-sm text-[#0E63F4] mt-0.5">
+              <div className="font-bold text-sm text-[#090D16] mt-0.5">
                 {formatNairaFromKobo(trialBalance.totalWalletLiabilitiesKobo)}
               </div>
             </div>

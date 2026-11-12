@@ -111,7 +111,7 @@ export function CustomerDetailDrawer({
                   <RoleGuard allowed={["SUPER_ADMIN", "OPERATIONS", "SUPPORT"]}>
                     <button
                       onClick={() => setShowUnfreeze(true)}
-                      className="px-4 py-2 rounded-xl bg-[#0E63F4] hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-[#090D16] hover:bg-black text-white text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
                     >
                       <Unlock className="w-3.5 h-3.5" />
                       Request Unfreeze (Maker)

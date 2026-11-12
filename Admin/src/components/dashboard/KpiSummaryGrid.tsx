@@ -19,7 +19,7 @@ export function KpiSummaryGrid({ kpis }: { kpis: OverviewResponse["kpis"] }) {
       value: formatNairaFromKobo(kpis.outflow24hKobo),
       sub: "Settled outward transfers",
       icon: ArrowUpRight,
-      accent: "text-[#0E63F4] bg-blue-50",
+      accent: "text-slate-800 bg-slate-100",
     },
     {
       label: "Total Fees Earned",

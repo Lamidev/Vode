@@ -17,10 +17,8 @@ import {
   X,
   LogOut,
   AlertTriangle,
-  User,
 } from "lucide-react";
 import { useAdminAuth } from "@/context/admin-auth-context";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 const NAV_ITEMS = [
@@ -102,7 +100,7 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
-                className={`flex items-center justify-between px-3 py-2 rounded-none text-xs transition-colors ${
+                className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-colors ${
                   isActive
                     ? "bg-white/12 text-white font-bold"
                     : "text-slate-300 hover:text-white hover:bg-white/5"
@@ -122,29 +120,29 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
           })}
         </nav>
 
-        {/* Footer: Admin Name & Role displayed clearly */}
-        <div className="p-3.5 border-t border-white/10 bg-black/30">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 rounded-none bg-white/10 flex items-center justify-center shrink-0 text-slate-300">
-                <User className="w-3.5 h-3.5" />
+        {/* Footer: Admin Name & Role displayed clearly on both mobile and desktop */}
+        <div className="p-3.5 border-t border-white/10 bg-black/40">
+          <div className="flex items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-white font-bold text-xs uppercase">
+                {admin?.fullName ? admin.fullName.charAt(0) : "A"}
               </div>
               <div className="min-w-0">
                 <div className="text-xs font-bold text-white truncate leading-tight">
                   {admin?.fullName || "Operator"}
                 </div>
-                <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider truncate">
-                  {admin?.role || "SUPPORT"}
+                <div className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider truncate mt-0.5">
+                  {admin?.role?.replace(/_/g, " ") || "SUPPORT"}
                 </div>
               </div>
             </div>
 
             <button
               onClick={() => setShowLogoutConfirm(true)}
-              title="Sign out"
-              className="p-1.5 rounded-none text-slate-400 hover:text-red-400 hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+              title="Sign out of Ops"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-white/10 transition-colors cursor-pointer shrink-0"
             >
-              <LogOut className="w-3.5 h-3.5" />
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -153,9 +151,9 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white rounded-none max-w-sm w-full p-5 space-y-4 border border-slate-300 shadow-xl">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 border border-slate-200 shadow-xl">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-none bg-red-50 text-red-600 border border-red-200">
+              <div className="p-2 rounded-xl bg-red-50 text-red-600 border border-red-200">
                 <AlertTriangle className="w-4 h-4" />
               </div>
               <div>

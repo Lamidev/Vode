@@ -115,7 +115,7 @@ export default function ReconciliationPage() {
                 <option value="Providus">Providus</option>
               </select>
 
-              <label className="px-4 py-2 rounded-xl bg-[#0E63F4] hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-2 cursor-pointer">
+              <label className="px-4 py-2 rounded-xl bg-[#090D16] hover:bg-black text-white text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors shadow-xs">
                 <UploadCloud className="w-4 h-4" />
                 {uploading ? "Matching..." : "Upload CSV"}
                 <input
@@ -214,7 +214,7 @@ export default function ReconciliationPage() {
       {/* Batch History */}
       <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden">
         <div className="px-5 py-3.5 border-b border-slate-100 font-display font-bold text-xs text-[#090D16] flex items-center gap-2">
-          <FileSpreadsheet className="w-4 h-4 text-[#0E63F4]" />
+          <FileSpreadsheet className="w-4 h-4 text-slate-700" />
           Past Reconciliation Batches
         </div>
         <div className="divide-y divide-slate-100">

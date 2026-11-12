@@ -31,7 +31,7 @@ export function AdminTopbar({ title, subtitle, onRefresh, onMenuClick }: AdminTo
             type="button"
             onClick={onMenuClick}
             aria-label="Open menu"
-            className="p-1.5 rounded-none border border-slate-300 text-[#090D16] hover:bg-slate-100 lg:hidden cursor-pointer shrink-0"
+            className="p-1.5 rounded-lg border border-slate-200 text-[#090D16] hover:bg-slate-50 lg:hidden cursor-pointer shrink-0"
           >
             <Menu className="w-4 h-4" />
           </button>
@@ -67,7 +67,7 @@ export function AdminTopbar({ title, subtitle, onRefresh, onMenuClick }: AdminTo
           {onRefresh && (
             <button
               onClick={onRefresh}
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-none border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
             >
               <RefreshCw className="w-3 h-3" />
               <span className="hidden sm:inline">Refresh</span>
@@ -80,18 +80,18 @@ export function AdminTopbar({ title, subtitle, onRefresh, onMenuClick }: AdminTo
               type="button"
               onClick={() => setShowNotifs((v) => !v)}
               aria-label="Notifications"
-              className="relative p-1.5 rounded-none border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="relative p-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
             >
               <Bell className="w-4 h-4" />
               {alertCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 px-0.5 bg-red-600 text-white text-[9px] font-bold flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 px-0.5 rounded-full bg-red-600 text-white text-[9px] font-bold flex items-center justify-center">
                   {alertCount}
                 </span>
               )}
             </button>
 
             {showNotifs && (
-              <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-white rounded-none shadow-xl border border-slate-300 p-3 z-50 space-y-2 text-xs">
+              <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-white rounded-2xl shadow-xl border border-slate-200 p-3 z-50 space-y-2 text-xs">
                 <div className="font-display font-bold text-[#090D16] px-1 pb-1 border-b border-slate-100 flex items-center justify-between">
                   <span>Ops Alerts</span>
                   <span className="text-[10px] font-mono text-slate-400">Live</span>
