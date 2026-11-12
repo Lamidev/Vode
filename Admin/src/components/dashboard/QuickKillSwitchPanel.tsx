@@ -11,6 +11,13 @@ interface QuickKillSwitchPanelProps {
   onUpdated: () => Promise<void>;
 }
 
+const PRESET_REASONS = [
+  "NIBSS Downtime",
+  "Rubies Maintenance",
+  "Security Hold",
+  "Routine Inspection",
+];
+
 export function QuickKillSwitchPanel({
   outwardTransfersEnabled,
   onUpdated,
@@ -21,14 +28,13 @@ export function QuickKillSwitchPanel({
   const [error, setError] = useState<string | null>(null);
 
   const handleToggle = async () => {
-    if (!reason.trim()) {
-      setError("A mandatory operational reason is required to toggle the kill-switch.");
-      return;
-    }
+    const finalReason =
+      reason.trim() ||
+      (outwardTransfersEnabled ? "Manual pause by Admin" : "Manual resume by Admin");
     setError(null);
     setLoading(true);
     try {
-      await adminApi.toggleKillSwitch(!outwardTransfersEnabled, reason.trim());
+      await adminApi.toggleKillSwitch(!outwardTransfersEnabled, finalReason);
       setReason("");
       await Promise.all([refresh(), onUpdated()]);
     } catch (err) {
@@ -57,14 +63,14 @@ export function QuickKillSwitchPanel({
                 Emergency Outward Transfer Kill-Switch
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
-                Instantly pauses or resumes all outward bank transfers across WhatsApp &amp; Core
-                Ledger.
+                WhatsApp automatically handles normal bank errors; use this brake only for major
+                maintenance or security holds.
               </p>
             </div>
           </div>
 
           <span
-            className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+            className={`px-2.5 py-1 rounded-full text-xs font-bold shrink-0 ${
               outwardTransfersEnabled
                 ? "bg-emerald-50 text-emerald-700"
                 : "bg-red-100 text-red-700"
@@ -74,6 +80,24 @@ export function QuickKillSwitchPanel({
           </span>
         </div>
 
+        {/* 1-Click Preset Chips */}
+        <div className="flex flex-wrap gap-1.5">
+          {PRESET_REASONS.map((preset) => (
+            <button
+              key={preset}
+              type="button"
+              onClick={() => setReason(preset)}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors cursor-pointer ${
+                reason === preset
+                  ? "bg-[#090D16] text-white border-[#090D16]"
+                  : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+              }`}
+            >
+              {preset}
+            </button>
+          ))}
+        </div>
+
         {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
 
         <div className="flex flex-col sm:flex-row gap-3">
@@ -81,8 +105,8 @@ export function QuickKillSwitchPanel({
             type="text"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Mandatory audit reason (e.g., NIBSS outage / Rubies maintenance)"
-            className="flex-1 px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#0E63F4]"
+            placeholder="Optional note (or pick a preset above)"
+            className="flex-1 px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#090D16]/20"
           />
           <button
             onClick={handleToggle}
@@ -105,4 +129,3 @@ export function QuickKillSwitchPanel({
     </RoleGuard>
   );
 }
-

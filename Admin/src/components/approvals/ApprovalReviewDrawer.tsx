@@ -24,10 +24,11 @@ export function ApprovalReviewDrawer({
   const [error, setError] = useState<string | null>(null);
 
   const isSameMaker = admin?.id === request.maker.id;
+  const isSuperAdmin = admin?.role === "SUPER_ADMIN";
   const isPending = request.status === "PENDING_APPROVAL";
   const canCheck =
     isPending &&
-    !isSameMaker &&
+    (isSuperAdmin || !isSameMaker) &&
     admin &&
     ["SUPER_ADMIN", "OPERATIONS", "FINANCE"].includes(admin.role);
 
@@ -147,12 +148,22 @@ export function ApprovalReviewDrawer({
             </div>
           )}
 
-          {isPending && isSameMaker && (
+          {isPending && isSameMaker && !isSuperAdmin && (
             <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 flex items-start gap-2">
               <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
               <span>
                 <strong>Segregation of Duties:</strong> You created this Maker request, so a
                 different Admin must approve or reject it.
+              </span>
+            </div>
+          )}
+
+          {isPending && isSameMaker && isSuperAdmin && (
+            <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-start gap-2">
+              <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600" />
+              <span>
+                <strong>Solo Founder Override:</strong> As <code>SUPER_ADMIN</code>, you can
+                approve and execute your own request directly.
               </span>
             </div>
           )}

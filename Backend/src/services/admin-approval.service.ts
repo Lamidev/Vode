@@ -67,10 +67,16 @@ export class AdminApprovalService {
     }
 
     if (actionReq.makerId === checkerId) {
-      return {
-        success: false,
-        message: "Two-person rule violation: Maker cannot approve their own request.",
-      };
+      const checkerAdmin = await prisma.adminUser.findUnique({
+        where: { id: checkerId },
+        select: { role: true },
+      });
+      if (checkerAdmin?.role !== "SUPER_ADMIN") {
+        return {
+          success: false,
+          message: "Two-person rule violation: Maker cannot approve their own request.",
+        };
+      }
     }
 
     const payload: any = actionReq.payload || {};
