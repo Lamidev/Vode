@@ -142,7 +142,7 @@ export class AdminController {
         data: { lastLoginAt: new Date(), lastLoginIp: req.ip || null },
       });
 
-      const token = setSessionCookie(res, admin.id);
+      setSessionCookie(res, admin.id);
       await recordAuditLog({
         adminUserId: admin.id,
         action: "ADMIN_LOGIN",
@@ -153,7 +153,6 @@ export class AdminController {
 
       res.status(200).json({
         requires2fa: false,
-        token,
         admin: {
           id: admin.id,
           email: admin.email,
@@ -202,7 +201,7 @@ export class AdminController {
         data: { lastLoginAt: new Date(), lastLoginIp: req.ip || null },
       });
 
-      const token = setSessionCookie(res, admin.id);
+      setSessionCookie(res, admin.id);
       await recordAuditLog({
         adminUserId: admin.id,
         action: "ADMIN_LOGIN_2FA",
@@ -213,7 +212,6 @@ export class AdminController {
 
       res.status(200).json({
         success: true,
-        token,
         admin: {
           id: admin.id,
           email: admin.email,
@@ -285,7 +283,13 @@ export class AdminController {
         req,
       });
     }
-    res.clearCookie(ADMIN_COOKIE_NAME, { path: "/" });
+    const isProd = env.NODE_ENV === "production";
+    res.clearCookie(ADMIN_COOKIE_NAME, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      path: "/",
+    });
     res.status(200).json({ success: true });
   }
 
