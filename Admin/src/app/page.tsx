@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { AdminShell } from "@/components/AdminShell";
 import { KpiSummaryGrid } from "@/components/dashboard/KpiSummaryGrid";
-import { InfrastructureHealthBar } from "@/components/dashboard/InfrastructureHealthBar";
 import { QuickKillSwitchPanel } from "@/components/dashboard/QuickKillSwitchPanel";
 import { LiveTransactionStream } from "@/components/dashboard/LiveTransactionStream";
 import { adminApi, OverviewResponse } from "@/lib/api";
@@ -40,7 +39,6 @@ export default function CommandCenterPage() {
 
       {data ? (
         <>
-          <InfrastructureHealthBar health={data.health} />
           <KpiSummaryGrid kpis={data.kpis} />
           <QuickKillSwitchPanel
             outwardTransfersEnabled={data.health.outwardTransfersEnabled}

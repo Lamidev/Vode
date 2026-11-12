@@ -72,7 +72,7 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
             />
             <div>
               <div className="font-display font-extrabold text-base tracking-tight text-white leading-none">
-                Vode <span className="text-[#00D084] font-bold text-xs">Ops</span>
+                Vode <span className="text-slate-400 font-medium text-xs">Ops</span>
               </div>
               <div className="text-[11px] text-slate-400 mt-0.5">Control &amp; Ledger</div>
             </div>
@@ -101,22 +101,22 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
-                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                   isActive
-                    ? "bg-white/10 text-white border-l-2 border-[#00D084] shadow-xs pl-3"
-                    : "text-slate-300 hover:bg-white/5 hover:text-white"
+                    ? "bg-white/10 text-white font-semibold"
+                    : "text-slate-400 hover:text-white hover:bg-white/5"
                 }`}
               >
-                <span className="flex items-center gap-3">
+                <span className="flex items-center gap-2.5">
                   <Icon
                     className={`w-4 h-4 shrink-0 transition-colors ${
-                      isActive ? "text-[#00D084]" : "text-slate-400"
+                      isActive ? "text-white" : "text-slate-400"
                     }`}
                   />
                   {item.label}
                 </span>
                 {showBadge && (
-                  <Badge variant="warning" className="bg-amber-400 text-[#090D16] border-none px-1.5">
+                  <Badge variant="outline" className="bg-white/10 text-white border-white/15 px-1.5 text-[10px]">
                     {pendingApprovalsCount}
                   </Badge>
                 )}
@@ -144,11 +144,8 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
           </div>
 
           <div className="pt-2 border-t border-white/5 text-[11px] text-slate-500 flex items-center justify-between">
-            <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00D084]" />
-              Solo Override Active
-            </span>
-            <span>v1.0</span>
+            <span className="text-slate-400">Solo Override Active</span>
+            <span className="font-mono text-slate-500">v1.0</span>
           </div>
         </div>
       </aside>

@@ -129,7 +129,7 @@ export default function TicketsPage() {
                     key={t.id}
                     onClick={() => setSelectedTicket(t)}
                     className={`w-full p-4 text-left transition-colors flex items-start justify-between gap-3 cursor-pointer ${
-                      isSelected ? "bg-slate-50 border-l-2 border-[#00D084]" : "hover:bg-slate-50/60"
+                      isSelected ? "bg-slate-50 border-l-2 border-[#090D16]" : "hover:bg-slate-50/60"
                     }`}
                   >
                     <div className="min-w-0 space-y-1">
