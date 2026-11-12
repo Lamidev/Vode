@@ -10,7 +10,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -107,103 +106,91 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F5] bg-vode-grid relative overflow-hidden flex flex-col items-center justify-center p-6">
-      {/* Ambient Vode Glow matching Landing Page */}
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[640px] h-[320px] bg-gradient-to-b from-[#00D084]/18 via-[#0E63F4]/10 to-transparent blur-3xl pointer-events-none" />
-
-      <div className="relative z-10 w-full max-w-md space-y-6">
+    <div className="min-h-screen bg-[#FAF9F5] flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-sm space-y-4">
         {/* Brand Lockup */}
-        <div className="flex flex-col items-center text-center space-y-2">
-          <div className="inline-flex items-center gap-2.5">
+        <div className="flex flex-col items-center text-center space-y-1">
+          <div className="inline-flex items-center gap-2">
             <Image
               src="/logo.png"
               alt="Vode"
-              width={36}
-              height={36}
-              className="rounded-lg object-contain"
+              width={30}
+              height={30}
+              className="rounded-none object-contain"
             />
-            <span className="font-display font-extrabold text-2xl tracking-tight text-[#090D16]">
-              Vode
+            <span className="font-display font-extrabold text-xl tracking-tight text-[#090D16]">
+              VODE OPS
             </span>
-            <Badge variant="info" className="ml-1">
-              Ops Portal
-            </Badge>
           </div>
-          <p className="text-xs text-[#525B6C]">
-            Double-Entry Ledger, Maker–Checker &amp; Emergency Controls
+          <p className="text-[11px] text-[#525B6C]">
+            Double-Entry Ledger &amp; Admin Operations
           </p>
         </div>
 
-        <Card className="shadow-xl border-[#090D16]/10">
-          <CardHeader className="pb-4">
-            <div className="flex items-center justify-between gap-2">
-              <div>
-                <CardTitle>
-                  {mode === "bootstrap" ? "First-Time Admin Setup" : "Sign in to Vode Ops"}
-                </CardTitle>
-                <CardDescription className="mt-1">
-                  {mode === "bootstrap"
-                    ? "Create the initial SUPER_ADMIN account (locks automatically after setup)."
-                    : "Restricted to authorized Vode operations & finance staff."}
-                </CardDescription>
-              </div>
-            </div>
+        <Card className="border-slate-300">
+          <CardHeader className="pb-3 border-b border-slate-100">
+            <CardTitle className="text-sm">
+              {mode === "bootstrap" ? "Create First Super Admin" : "Sign in to Vode Ops"}
+            </CardTitle>
+            <CardDescription className="text-[11px]">
+              {mode === "bootstrap"
+                ? "Set up the initial account. This locks automatically after creation."
+                : "Enter your official staff credentials to continue."}
+            </CardDescription>
 
             {!challengeToken && needsBootstrap && (
-              <div className="flex gap-1.5 pt-3">
+              <div className="flex gap-1 pt-2">
                 <button
                   type="button"
                   onClick={() => {
                     setMode("login");
                     setError(null);
                   }}
-                  className={`flex-1 py-1.5 px-3 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
+                  className={`flex-1 py-1 px-2 text-xs font-bold border transition-colors cursor-pointer ${
                     mode === "login"
-                      ? "bg-[#090D16] text-white"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      ? "bg-[#090D16] text-white border-[#090D16]"
+                      : "bg-slate-100 text-slate-700 border-slate-200"
                   }`}
                 >
                   Sign In
                 </button>
-                {needsBootstrap && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMode("bootstrap");
-                      setError(null);
-                    }}
-                    className={`flex-1 py-1.5 px-3 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
-                      mode === "bootstrap"
-                        ? "bg-[#090D16] text-white"
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                    }`}
-                  >
-                    Create First Admin
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("bootstrap");
+                    setError(null);
+                  }}
+                  className={`flex-1 py-1 px-2 text-xs font-bold border transition-colors cursor-pointer ${
+                    mode === "bootstrap"
+                      ? "bg-[#090D16] text-white border-[#090D16]"
+                      : "bg-slate-100 text-slate-700 border-slate-200"
+                  }`}
+                >
+                  Create Admin
+                </button>
               </div>
             )}
           </CardHeader>
 
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3 pt-3">
             {error && (
-              <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <div className="p-2.5 bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-1.5">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                 <span>{error}</span>
               </div>
             )}
 
             {bootstrapSuccess ? (
-              <div className="space-y-4">
-                <div className="p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs space-y-1.5">
-                  <div className="font-semibold flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    Super Admin Created: {bootstrapSuccess.email}
+              <div className="space-y-3">
+                <div className="p-3 bg-slate-100 border border-slate-300 text-xs space-y-1.5">
+                  <div className="font-bold flex items-center gap-1.5 text-[#090D16]">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    Admin Created: {bootstrapSuccess.email}
                   </div>
-                  <p className="text-emerald-800">
-                    Save this 2FA Secret Key in Google Authenticator / 1Password, then sign in:
+                  <p className="text-[11px] text-slate-600">
+                    Save this 2FA key in Google Authenticator or 1Password:
                   </p>
-                  <div className="font-mono font-bold bg-white px-2.5 py-1.5 rounded border border-emerald-200 select-all">
+                  <div className="font-mono font-bold bg-white p-2 border border-slate-300 select-all text-xs">
                     {bootstrapSuccess.totpSecret}
                   </div>
                 </div>
@@ -219,9 +206,9 @@ export default function AdminLoginPage() {
                 </Button>
               </div>
             ) : mode === "bootstrap" ? (
-              <form onSubmit={handleBootstrap} className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="fullName">Full Name</Label>
+              <form onSubmit={handleBootstrap} className="space-y-3">
+                <div className="space-y-1">
+                  <Label htmlFor="fullName" className="text-[11px]">Full Name</Label>
                   <Input
                     id="fullName"
                     type="text"
@@ -232,8 +219,8 @@ export default function AdminLoginPage() {
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="bootstrapEmail">Official Work Email</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="bootstrapEmail" className="text-[11px]">Official Work Email</Label>
                   <Input
                     id="bootstrapEmail"
                     type="email"
@@ -244,8 +231,8 @@ export default function AdminLoginPage() {
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="bootstrapPassword">Password (8+ characters)</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="bootstrapPassword" className="text-[11px]">Password (8+ chars)</Label>
                   <Input
                     id="bootstrapPassword"
                     type="password"
@@ -258,14 +245,14 @@ export default function AdminLoginPage() {
                 </div>
 
                 <Button type="submit" disabled={submitting} className="w-full">
-                  <UserPlus className="w-4 h-4" />
-                  {submitting ? "Creating Super Admin..." : "Create Super Admin"}
+                  <UserPlus className="w-3.5 h-3.5" />
+                  {submitting ? "Creating Admin..." : "Create Super Admin"}
                 </Button>
               </form>
             ) : !challengeToken ? (
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="email">Work Email</Label>
+              <form onSubmit={handleLogin} className="space-y-3">
+                <div className="space-y-1">
+                  <Label htmlFor="email" className="text-[11px]">Work Email</Label>
                   <Input
                     id="email"
                     type="email"
@@ -276,8 +263,8 @@ export default function AdminLoginPage() {
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="password">Password</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="password" className="text-[11px]">Password</Label>
                   <Input
                     id="password"
                     type="password"
@@ -289,21 +276,19 @@ export default function AdminLoginPage() {
                 </div>
 
                 <Button type="submit" disabled={submitting} className="w-full">
-                  <Lock className="w-4 h-4" />
-                  {submitting ? "Authenticating..." : "Sign In to Ops"}
+                  <Lock className="w-3.5 h-3.5" />
+                  {submitting ? "Signing In..." : "Sign In to Ops"}
                 </Button>
               </form>
             ) : (
-              <form onSubmit={handleVerify2fa} className="space-y-4">
-                <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 text-xs flex items-start gap-2.5">
-                  <KeyRound className="w-4 h-4 shrink-0 mt-0.5 text-[#0E63F4]" />
-                  <span>
-                    Enter the 6-digit code from your authenticator app to complete 2FA.
-                  </span>
+              <form onSubmit={handleVerify2fa} className="space-y-3">
+                <div className="p-2.5 bg-slate-100 border border-slate-300 text-xs flex items-start gap-2">
+                  <KeyRound className="w-3.5 h-3.5 shrink-0 mt-0.5 text-slate-700" />
+                  <span>Enter the 6-digit code from your authenticator app.</span>
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="totp">6-Digit Authenticator Code</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="totp" className="text-[11px]">6-Digit Code</Label>
                   <Input
                     id="totp"
                     type="text"
@@ -314,7 +299,7 @@ export default function AdminLoginPage() {
                     value={totpCode}
                     onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, ""))}
                     placeholder="123456"
-                    className="text-center text-lg font-mono tracking-[0.35em]"
+                    className="text-center font-mono tracking-widest text-sm"
                   />
                 </div>
 
@@ -323,8 +308,8 @@ export default function AdminLoginPage() {
                   disabled={submitting || totpCode.length !== 6}
                   className="w-full"
                 >
-                  <ShieldCheck className="w-4 h-4" />
-                  {submitting ? "Verifying..." : "Verify & Enter"}
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  {submitting ? "Verifying..." : "Verify & Sign In"}
                 </Button>
 
                 <button
@@ -334,15 +319,15 @@ export default function AdminLoginPage() {
                     setTotpCode("");
                     setError(null);
                   }}
-                  className="w-full text-xs text-[#525B6C] hover:text-[#090D16] cursor-pointer"
+                  className="w-full text-center text-[11px] text-slate-500 hover:text-black cursor-pointer pt-1"
                 >
-                  Back to email &amp; password
+                  Back to credentials
                 </button>
               </form>
             )}
 
-            <div className="pt-3 border-t border-slate-100 text-[11px] text-[#525B6C] text-center">
-              All sessions are HTTP-only cookie bound and recorded in the Audit Log.
+            <div className="pt-2 border-t border-slate-100 text-[10px] text-slate-400 text-center font-mono">
+              HTTP-only cookie bound • Audit logged
             </div>
           </CardContent>
         </Card>

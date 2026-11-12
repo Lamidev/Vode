@@ -7,6 +7,9 @@ import { RoleGuard } from "@/components/RoleGuard";
 import { useAdminAuth } from "@/context/admin-auth-context";
 import { adminApi, AdminRole, AdminUser, ApiError } from "@/lib/api";
 import { formatDateTime } from "@/lib/format";
+import { QuickKillSwitchPanel } from "@/components/dashboard/QuickKillSwitchPanel";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function SettingsPage() {
   const { admin, refresh } = useAdminAuth();
@@ -88,159 +91,149 @@ export default function SettingsPage() {
 
   return (
     <AdminShell
-      title="Team, RBAC & 2FA Security"
-      subtitle="Manage operator roles and hardware/TOTP two-factor authentication"
+      title="Settings & System Control"
+      subtitle="Kill-switches, operator team management, and 2FA authentication"
       onRefresh={loadTeam}
     >
-      {/* 2FA Setup Card */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-6 space-y-4">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <div
-              className={`p-2.5 rounded-xl ${
-                admin?.totpEnabled
-                  ? "bg-emerald-50 text-emerald-600"
-                  : "bg-amber-50 text-amber-600"
-              }`}
-            >
-              <KeyRound className="w-5 h-5" />
+      {/* 1. Emergency Controls Section */}
+      <div className="space-y-2">
+        <h2 className="font-display font-bold text-xs uppercase tracking-wider text-slate-500">
+          System Emergency Controls
+        </h2>
+        <QuickKillSwitchPanel />
+      </div>
+
+      {/* 2. 2FA Setup Card */}
+      <div className="bg-white border border-slate-200 p-4 sm:p-5 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-2.5">
+            <div className="p-1.5 bg-slate-100 text-slate-800 shrink-0">
+              <KeyRound className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="font-display font-bold text-sm text-[#090D16]">
-                Your Two-Factor Authentication (TOTP)
-              </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <h3 className="font-display font-bold text-xs sm:text-sm text-[#090D16]">
+                Two-Factor Authentication (TOTP)
+              </h3>
+              <p className="text-[11px] text-slate-500 mt-0.5">
                 {admin?.totpEnabled
-                  ? "TOTP 2FA is active on your account."
-                  : "Protect your admin session with Google Authenticator or 1Password."}
+                  ? "TOTP 2FA is active on your admin account."
+                  : "Protect your admin login with Google Authenticator or 1Password."}
               </p>
             </div>
           </div>
 
           {!admin?.totpEnabled && !totpSecret && (
-            <button
-              onClick={handleInit2fa}
-              className="px-4 py-2 rounded-xl bg-[#0E63F4] hover:bg-blue-700 text-white text-xs font-semibold cursor-pointer"
-            >
-              Setup 2FA Now
-            </button>
+            <Button size="sm" onClick={handleInit2fa} className="self-start sm:self-center">
+              Setup 2FA
+            </Button>
           )}
         </div>
 
         {totpMsg && (
-          <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900">
+          <div className="p-2.5 bg-slate-100 border border-slate-300 text-xs text-[#090D16]">
             {totpMsg}
           </div>
         )}
 
         {totpSecret && (
-          <form onSubmit={handleConfirm2fa} className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3 text-xs">
+          <form onSubmit={handleConfirm2fa} className="p-3 bg-slate-50 border border-slate-200 space-y-2.5 text-xs">
             <div>
-              <div className="font-semibold text-[#090D16]">
-                1. Add this Secret Key to your Authenticator App:
-              </div>
-              <div className="mt-1 font-mono font-bold text-sm bg-white p-2.5 rounded-lg border border-slate-200 select-all">
+              <div className="font-bold text-[#090D16]">1. Add Secret Key to Authenticator App:</div>
+              <div className="mt-1 font-mono font-bold text-xs bg-white p-2 border border-slate-300 select-all">
                 {totpSecret}
               </div>
-              {otpauthUri && (
-                <div className="mt-1 text-[11px] text-slate-400 break-all">{otpauthUri}</div>
-              )}
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 items-end">
               <div className="flex-1 w-full">
-                <label className="block font-semibold text-slate-700 mb-1">
-                  2. Enter 6-Digit Verification Code
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                  2. Enter 6-Digit Code
                 </label>
-                <input
+                <Input
                   type="text"
                   maxLength={6}
                   required
                   value={totpCode}
                   onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, ""))}
                   placeholder="123456"
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-sm"
+                  className="font-mono text-center tracking-widest"
                 />
               </div>
-              <button
-                type="submit"
-                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold flex items-center gap-1.5 cursor-pointer"
-              >
-                <ShieldCheck className="w-4 h-4" />
+              <Button type="submit" size="sm" className="w-full sm:w-auto">
+                <ShieldCheck className="w-3.5 h-3.5" />
                 Activate 2FA
-              </button>
+              </Button>
             </div>
           </form>
         )}
       </div>
 
-      {/* Admin Team Table */}
+      {/* 3. Admin Team Table */}
       <RoleGuard allowed={["SUPER_ADMIN", "OPERATIONS"]}>
-        <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="bg-white border border-slate-200 overflow-hidden">
+          <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
             <div>
-              <h2 className="font-display font-bold text-sm text-[#090D16]">Admin Team</h2>
-              <p className="text-xs text-slate-500">Role-based access control directory</p>
+              <h3 className="font-display font-bold text-xs sm:text-sm text-[#090D16]">Admin Operators</h3>
+              <p className="text-[11px] text-slate-500">Authorized platform staff</p>
             </div>
             <RoleGuard allowed={["SUPER_ADMIN"]}>
-              <button
-                onClick={() => setShowCreate(true)}
-                className="px-4 py-2 rounded-xl bg-[#090D16] hover:bg-[#1a2234] text-white text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
-              >
+              <Button size="sm" onClick={() => setShowCreate(true)}>
                 <UserPlus className="w-3.5 h-3.5" />
                 Add Admin
-              </button>
+              </Button>
             </RoleGuard>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-500 uppercase text-[11px]">
+              <thead className="bg-slate-50 text-slate-600 uppercase text-[10px] border-b border-slate-200">
                 <tr>
-                  <th className="px-5 py-3 font-semibold">Name</th>
-                  <th className="px-5 py-3 font-semibold">Role</th>
-                  <th className="px-5 py-3 font-semibold">2FA</th>
-                  <th className="px-5 py-3 font-semibold">Status</th>
-                  <th className="px-5 py-3 font-semibold">Last Login</th>
-                  <th className="px-5 py-3 font-semibold text-right">Action</th>
+                  <th className="px-4 py-2.5 font-bold">Name</th>
+                  <th className="px-4 py-2.5 font-bold">Role</th>
+                  <th className="px-4 py-2.5 font-bold">2FA</th>
+                  <th className="px-4 py-2.5 font-bold">Status</th>
+                  <th className="px-4 py-2.5 font-bold">Last Login</th>
+                  <th className="px-4 py-2.5 font-bold text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {members.map((m) => (
-                  <tr key={m.id}>
-                    <td className="px-5 py-3.5">
-                      <div className="font-semibold text-[#090D16]">{m.fullName}</div>
-                      <div className="text-[11px] text-slate-400">{m.email}</div>
+                  <tr key={m.id} className="hover:bg-slate-50">
+                    <td className="px-4 py-2.5">
+                      <div className="font-bold text-[#090D16]">{m.fullName}</div>
+                      <div className="text-[11px] text-slate-500">{m.email}</div>
                     </td>
-                    <td className="px-5 py-3.5 font-mono font-semibold text-[#0E63F4]">
+                    <td className="px-4 py-2.5 font-mono font-bold text-[#090D16]">
                       {m.role}
                     </td>
-                    <td className="px-5 py-3.5">
+                    <td className="px-4 py-2.5">
                       {m.totpEnabled ? (
-                        <span className="text-emerald-700 font-semibold">Enabled</span>
+                        <span className="text-emerald-700 font-bold">Enabled</span>
                       ) : (
-                        <span className="text-amber-600">Pending</span>
+                        <span className="text-slate-400">Pending</span>
                       )}
                     </td>
-                    <td className="px-5 py-3.5">
+                    <td className="px-4 py-2.5">
                       {m.isActive ? (
-                        <span className="text-emerald-700 font-semibold">Active</span>
+                        <span className="font-bold text-[#090D16]">Active</span>
                       ) : (
-                        <span className="text-red-600 font-semibold">Disabled</span>
+                        <span className="text-red-600 font-bold">Disabled</span>
                       )}
                     </td>
-                    <td className="px-5 py-3.5 text-slate-500">
+                    <td className="px-4 py-2.5 text-slate-500 text-[11px]">
                       {formatDateTime(m.lastLoginAt)}
                     </td>
-                    <td className="px-5 py-3.5 text-right">
+                    <td className="px-4 py-2.5 text-right">
                       <RoleGuard allowed={["SUPER_ADMIN"]}>
                         {m.id !== admin?.id && (
-                          <button
+                          <Button
+                            variant="outline"
+                            size="sm"
                             onClick={() => handleToggleActive(m)}
-                            className="px-3 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs font-medium cursor-pointer"
+                            className="h-7 text-[11px]"
                           >
                             {m.isActive ? "Disable" : "Enable"}
-                          </button>
+                          </Button>
                         )}
                       </RoleGuard>
                     </td>
@@ -252,11 +245,12 @@ export default function SettingsPage() {
         </div>
       </RoleGuard>
 
+      {/* Create Admin Modal */}
       {showCreate && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-xl border border-slate-200">
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="bg-white rounded-none max-w-sm w-full p-5 space-y-3.5 border border-slate-300 shadow-xl">
             <div className="flex items-center justify-between">
-              <h3 className="font-display font-bold text-base text-[#090D16]">
+              <h3 className="font-display font-bold text-sm text-[#090D16]">
                 Create Admin Operator
               </h3>
               <button
@@ -268,49 +262,46 @@ export default function SettingsPage() {
             </div>
 
             {teamError && (
-              <div className="p-2.5 rounded-lg bg-red-50 text-red-700 text-xs">{teamError}</div>
+              <div className="p-2 bg-red-50 text-red-700 text-xs border border-red-200">{teamError}</div>
             )}
 
-            <form onSubmit={handleCreateAdmin} className="space-y-3 text-xs">
+            <form onSubmit={handleCreateAdmin} className="space-y-2.5 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Full Name</label>
-                <input
-                  type="text"
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">Full Name</label>
+                <Input
                   required
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200"
+                  placeholder="e.g. John Doe"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Work Email</label>
-                <input
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">Work Email</label>
+                <Input
                   type="email"
                   required
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200"
+                  placeholder="john@usevode.com"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
-                  Temporary Password (8+ chars)
-                </label>
-                <input
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">Temporary Password (8+)</label>
+                <Input
                   type="password"
                   required
                   minLength={8}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200"
+                  placeholder="••••••••••••"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Role</label>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">Role</label>
                 <select
                   value={newRole}
                   onChange={(e) => setNewRole(e.target.value as AdminRole)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white"
+                  className="w-full h-9 px-2 border border-slate-300 bg-white text-xs rounded-none"
                 >
                   <option value="SUPPORT">SUPPORT</option>
                   <option value="FINANCE">FINANCE</option>
@@ -318,20 +309,14 @@ export default function SettingsPage() {
                   <option value="SUPER_ADMIN">SUPER_ADMIN</option>
                 </select>
               </div>
+
               <div className="flex justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowCreate(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-200 font-semibold cursor-pointer"
-                >
+                <Button type="button" variant="outline" size="sm" onClick={() => setShowCreate(false)}>
                   Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-xl bg-[#0E63F4] text-white font-semibold cursor-pointer"
-                >
+                </Button>
+                <Button type="submit" size="sm">
                   Create Admin
-                </button>
+                </Button>
               </div>
             </form>
           </div>
@@ -340,4 +325,3 @@ export default function SettingsPage() {
     </AdminShell>
   );
 }
-

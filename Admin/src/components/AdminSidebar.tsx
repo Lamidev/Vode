@@ -17,6 +17,7 @@ import {
   X,
   LogOut,
   AlertTriangle,
+  User,
 } from "lucide-react";
 import { useAdminAuth } from "@/context/admin-auth-context";
 import { Badge } from "@/components/ui/badge";
@@ -31,7 +32,7 @@ const NAV_ITEMS = [
   { href: "/ledger", label: "Double-Entry Ledger", icon: BookOpen },
   { href: "/reconciliation", label: "Reconciliation", icon: FileSpreadsheet },
   { href: "/audit", label: "Audit Logs", icon: History },
-  { href: "/settings", label: "Team & 2FA", icon: Settings },
+  { href: "/settings", label: "Settings & System", icon: Settings },
 ];
 
 interface AdminSidebarProps {
@@ -50,46 +51,46 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-black/60 lg:hidden"
           aria-hidden="true"
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 shrink-0 bg-[#090D16] text-white min-h-screen flex flex-col border-r border-white/10 transform transition-transform duration-200 ease-out lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 shrink-0 bg-[#090D16] text-white min-h-screen flex flex-col border-r border-white/10 transform transition-transform duration-150 ease-out lg:static lg:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Brand Lockup */}
-        <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+        <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
           <Link href="/" onClick={onClose} className="flex items-center gap-2.5">
             <Image
               src="/logo.png"
               alt="Vode"
-              width={28}
-              height={28}
-              className="rounded-md object-contain"
+              width={26}
+              height={26}
+              className="rounded-none object-contain"
             />
             <div>
-              <div className="font-display font-extrabold text-base tracking-tight text-white leading-none">
-                Vode <span className="text-slate-400 font-medium text-xs">Ops</span>
+              <div className="font-display font-extrabold text-sm tracking-tight text-white leading-none">
+                VODE <span className="text-slate-400 font-medium text-[11px]">OPS</span>
               </div>
-              <div className="text-[11px] text-slate-400 mt-0.5">Control &amp; Ledger</div>
+              <div className="text-[10px] text-slate-400 mt-0.5">Control &amp; Ledger</div>
             </div>
           </Link>
 
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close navigation menu"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 lg:hidden cursor-pointer"
+            aria-label="Close menu"
+            className="p-1 rounded-none text-slate-400 hover:text-white hover:bg-white/10 lg:hidden cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Navigation Items (Sleek Obsidian/Mint selection instead of bright blue) */}
-        <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
+        {/* Navigation Items (Square, sleek, high contrast) */}
+        <nav className="flex-1 px-2.5 py-4 space-y-0.5 overflow-y-auto">
           {NAV_ITEMS.map((item) => {
             const isActive =
               item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -101,69 +102,68 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
-                className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                className={`flex items-center justify-between px-3 py-2 rounded-none text-xs transition-colors ${
                   isActive
-                    ? "bg-white/10 text-white font-semibold"
-                    : "text-slate-400 hover:text-white hover:bg-white/5"
+                    ? "bg-white/12 text-white font-bold"
+                    : "text-slate-300 hover:text-white hover:bg-white/5"
                 }`}
               >
                 <span className="flex items-center gap-2.5">
-                  <Icon
-                    className={`w-4 h-4 shrink-0 transition-colors ${
-                      isActive ? "text-white" : "text-slate-400"
-                    }`}
-                  />
+                  <Icon className="w-3.5 h-3.5 shrink-0" />
                   {item.label}
                 </span>
                 {showBadge && (
-                  <Badge variant="outline" className="bg-white/10 text-white border-white/15 px-1.5 text-[10px]">
+                  <span className="px-1.5 py-0.2 bg-white text-[#090D16] text-[10px] font-bold">
                     {pendingApprovalsCount}
-                  </Badge>
+                  </span>
                 )}
               </Link>
             );
           })}
         </nav>
 
-        {/* Admin Footer & Logout */}
-        <div className="p-4 border-t border-white/10 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0">
-              <div className="text-xs font-semibold text-white truncate">
-                {admin?.fullName || "Operator"}
+        {/* Footer: Admin Name & Role displayed clearly */}
+        <div className="p-3.5 border-t border-white/10 bg-black/30">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-7 h-7 rounded-none bg-white/10 flex items-center justify-center shrink-0 text-slate-300">
+                <User className="w-3.5 h-3.5" />
               </div>
-              <div className="text-[11px] text-slate-400 truncate">{admin?.role}</div>
+              <div className="min-w-0">
+                <div className="text-xs font-bold text-white truncate leading-tight">
+                  {admin?.fullName || "Operator"}
+                </div>
+                <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider truncate">
+                  {admin?.role || "SUPPORT"}
+                </div>
+              </div>
             </div>
+
             <button
               onClick={() => setShowLogoutConfirm(true)}
-              title="Sign out of Admin"
-              className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-white/5 transition-colors cursor-pointer"
+              title="Sign out"
+              className="p-1.5 rounded-none text-slate-400 hover:text-red-400 hover:bg-white/10 transition-colors cursor-pointer shrink-0"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-3.5 h-3.5" />
             </button>
-          </div>
-
-          <div className="pt-2 border-t border-white/5 text-[11px] text-slate-500 flex items-center justify-between">
-            <span className="text-slate-400">Solo Override Active</span>
-            <span className="font-mono text-slate-500">v1.0</span>
           </div>
         </div>
       </aside>
 
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-slate-200">
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="bg-white rounded-none max-w-sm w-full p-5 space-y-4 border border-slate-300 shadow-xl">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-red-50 text-red-600">
-                <AlertTriangle className="w-5 h-5" />
+              <div className="p-2 rounded-none bg-red-50 text-red-600 border border-red-200">
+                <AlertTriangle className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-base text-[#090D16]">
+                <h3 className="font-display font-bold text-sm text-[#090D16]">
                   Sign Out of Ops?
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Your active admin session will be terminated.
+                  Confirm ending your admin session.
                 </p>
               </div>
             </div>
@@ -184,7 +184,7 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                   await logout();
                 }}
               >
-                Yes, Sign Out
+                Sign Out
               </Button>
             </div>
           </div>
